@@ -5,7 +5,7 @@ const token = process.env.TELEGRAM_BOT_TOKEN;
 
 const bot = new Telegraf(token)
 
-const list = [];
+const namespaces = new Map();
 
 const getNamespace = (chat) => {
     if(chat.type === 'private') {
@@ -37,15 +37,23 @@ bot.command('add', async ctx => {
     const commandLength = ctx.update.message.entities[0].length;
     const nomeFilme = ctx.update.message.text.substring(commandLength).trim()
 
+    const namespace = getNamespace(chat);
     console.log('ADD', ctx.update.message)
-    console.log(chat.id, getNamespace(chat))
+    console.log(chat.id, namespace)
     if(nomeFilme) {
+        if(!namespaces.has(chat.id)) {
+            namespaces.set(chat.id, [])
+        }
+
+        const list = namespaces.get(chat.id);
         list.push(nomeFilme)
-        ctx.reply(`"${nomeFilme}" adicionado a lista de ${getNamespace(chat)}`)
+        ctx.reply(`"${nomeFilme}" adicionado a lista de ${namespace}`)
     } else {
         console.error('invalid name')
         ctx.reply('Nome inválido')
     }
+
+    console.log(namespaces)
 })
 
 bot.command('list', async ctx => {
@@ -53,6 +61,12 @@ bot.command('list', async ctx => {
 
     console.log('LIST', ctx.update.message)
     console.log(chat.id, getNamespace(chat))
+
+    let list = [];
+    if(namespaces.has(chat.id)) {
+        list = namespaces.get(chat.id);
+    }
+
     list.join('\n')
     ctx.reply(`Lista de ${getNamespace(chat)} (${list.length} itens): \n${list.join(',\n')}`)
 })
