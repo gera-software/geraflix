@@ -5,6 +5,8 @@ const token = process.env.TELEGRAM_BOT_TOKEN;
 
 const bot = new Telegraf(token)
 
+const list = [];
+
 const getNamespace = (chat) => {
     if(chat.type === 'private') {
         return `@${chat.username}`
@@ -36,13 +38,23 @@ bot.command('add', async ctx => {
     const nomeFilme = ctx.update.message.text.substring(commandLength).trim()
 
     console.log('ADD', ctx.update.message)
+    console.log(chat.id, getNamespace(chat))
     if(nomeFilme) {
-        console.log(nomeFilme)
-        ctx.reply(`"${nomeFilme}" added to ${getNamespace(chat)}'s list`)
+        list.push(nomeFilme)
+        ctx.reply(`"${nomeFilme}" adicionado a lista de ${getNamespace(chat)}`)
     } else {
         console.error('invalid name')
         ctx.reply('Nome inválido')
     }
+})
+
+bot.command('list', async ctx => {
+    const chat = ctx.update.message.chat;
+
+    console.log('LIST', ctx.update.message)
+    console.log(chat.id, getNamespace(chat))
+    list.join('\n')
+    ctx.reply(`Lista de ${getNamespace(chat)} (${list.length} itens): \n${list.join(',\n')}`)
 })
 
 bot.launch()
