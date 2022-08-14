@@ -1,0 +1,22 @@
+{
+  "name": "geraflix",
+  "version": "0.1.0",
+  "description": "Telegram Bot to manage list of films to watch with friends.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gera-software/geraflix.git"
+  },
+  "keywords": [
+    "telegram"
+  ],
+  "author": "Gilmar Andrade",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gera-software/geraflix/issues"
+  },
+  "homepage": "https://github.com/gera-software/geraflix#readme"
+}
