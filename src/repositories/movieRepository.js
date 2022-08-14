@@ -1,7 +1,6 @@
 const { MongoClient } = require("mongodb")
 
 const uri = process.env.MONGO_URI
-// const uri = "mongodb+srv://<user>:<password>@<cluster-url>?retryWrites=true&writeConcern=majority";
 
 const find = async ({ namespace }) => {
     let client = null
