@@ -16,6 +16,7 @@ bot.start(async ctx => {
     const namespace = getNamespace(chat)
     
     ctx.reply(`Seja bem vindo a lista de filmes de ${namespace}!`)
+    ctx.reply(`/add <name> - Para adicionar um filme \n/remove <name> - Para remover um filme \n/list - Para listar filmes \n`)
 
     console.log(user)
     console.log(chat)
