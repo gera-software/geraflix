@@ -1,59 +1,35 @@
 const getNamespace = require('../helpers/getNamespace.js')
+const movieRepository = require('../repositories/movieRepository.js')
 
-const namespaces = new Map();
-
-const add = async (chat, movie) => {
-    if(movie) {
-        if(!namespaces.has(chat.id)) {
-            namespaces.set(chat.id, [])
+const add = async (chat, title) => {
+    if(title) {
+        if(await movieRepository.findOne({ namespace: chat.id, title })) {
+            return `"${title}" já está na lista de ${getNamespace(chat)}`
         }
 
-        
-        if(await find(chat, movie)) {
-            return `"${movie}" já está na lista de ${getNamespace(chat)}`
-        }
+        await movieRepository.insertOne({ namespace: chat.id, title })
 
-        const list = namespaces.get(chat.id);
-        list.push(movie)
-        return `"${movie}" adicionado a lista de ${getNamespace(chat)}`
+        return `"${title}" adicionado a lista de ${getNamespace(chat)}`
     }
 
     return 'Nome inválido'
 }
 
 const list = async (chat) => {
-    let list = [];
-    if(namespaces.has(chat.id)) {
-        list = namespaces.get(chat.id)
-    }
+    const results = await movieRepository.find({ namespace: chat.id})
 
-    list.join('\n')
-    return `Lista de ${getNamespace(chat)} (${list.length} itens): \n${list.join(',\n')}`
+    return `Lista de ${getNamespace(chat)} (${results.length} itens): \n${results.map(item => item.title).join(',\n')}`
 }
 
-const find = async (chat, movie) => {
-    let list = [];
-    if(namespaces.has(chat.id)) {
-        list = namespaces.get(chat.id)
-    }
-
-    return list.find(item => item === movie);
-}
-
-const remove = async (chat, movie) => {
+const remove = async (chat, title) => {
     const namespace = getNamespace(chat);
-    if(movie) {
-        if(!namespaces.has(chat.id)) {
-            namespaces.set(chat.id, [])
-        }
+    if(title) {
+        const result = await movieRepository.deleteOne({ namespace: chat.id, title })
 
-        const list = namespaces.get(chat.id);
-        const index = list.indexOf(movie);
-        if(index < 0) {
-            return `"${movie}" não encontrado na lista de ${namespace}`
+        if(result >= 1) {
+            return `"${title}" removido da lista de ${namespace}`
         } else {
-            list.splice(index, 1)
-            return `"${movie}" removido da lista de ${namespace}`
+            return `"${title}" não encontrado na lista de ${namespace}`
         }
     }
     
@@ -64,5 +40,4 @@ module.exports = {
     add,
     list,
     remove,
-    find,
 }

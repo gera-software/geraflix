@@ -23,6 +23,7 @@
   "homepage": "https://github.com/gera-software/geraflix#readme",
   "dependencies": {
     "dotenv": "^16.0.1",
+    "mongodb": "4.8",
     "telegraf": "^4.8.6"
   },
   "devDependencies": {
