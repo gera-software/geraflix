@@ -29,6 +29,7 @@ bot.start(async ctx => {
     console.log(chat)
 })
 
+// TODO verificar se o filme já existe
 bot.command('add', async ctx => {
     const chat = ctx.update.message.chat;
     const commandLength = ctx.update.message.entities[0].length;
@@ -37,10 +38,10 @@ bot.command('add', async ctx => {
     console.log('ADD', ctx.update.message)
     if(nomeFilme) {
         console.log(nomeFilme)
-        ctx.reply(`"${nomeFilme}" added to ${chat.title}'s list`)
+        ctx.reply(`"${nomeFilme}" added to ${getNamespace(chat)}'s list`)
     } else {
         console.error('invalid name')
-        ctx.reply('Invalid name')
+        ctx.reply('Nome inválido')
     }
 })
 
