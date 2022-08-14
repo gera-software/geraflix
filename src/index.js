@@ -43,6 +43,8 @@ bot.command('list', async ctx => {
 })
 
 bot.command('remove', async ctx => {
+    console.log('REMOVE', ctx.update.message)
+
     const chat = ctx.update.message.chat;
     const commandLength = ctx.update.message.entities[0].length;
     const movieName = ctx.update.message.text.substring(commandLength).trim()

@@ -2,11 +2,15 @@ const getNamespace = require('../helpers/getNamespace.js')
 
 const namespaces = new Map();
 
-// TODO verificar se o filme já existe
 const add = async (chat, movie) => {
     if(movie) {
         if(!namespaces.has(chat.id)) {
             namespaces.set(chat.id, [])
+        }
+
+        
+        if(await find(chat, movie)) {
+            return `"${movie}" já está na lista de ${getNamespace(chat)}`
         }
 
         const list = namespaces.get(chat.id);
@@ -25,6 +29,15 @@ const list = async (chat) => {
 
     list.join('\n')
     return `Lista de ${getNamespace(chat)} (${list.length} itens): \n${list.join(',\n')}`
+}
+
+const find = async (chat, movie) => {
+    let list = [];
+    if(namespaces.has(chat.id)) {
+        list = namespaces.get(chat.id)
+    }
+
+    return list.find(item => item === movie);
 }
 
 const remove = async (chat, movie) => {
@@ -51,4 +64,5 @@ module.exports = {
     add,
     list,
     remove,
+    find,
 }
