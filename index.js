@@ -5,14 +5,43 @@ const token = process.env.TELEGRAM_BOT_TOKEN;
 
 const bot = new Telegraf(token)
 
+const getNamespace = (chat) => {
+    if(chat.type === 'private') {
+        return `@${chat.username}`
+    } else if(chat.type === 'group' || chat.type === 'supergroup') {
+        return chat.title
+    }
+
+    return undefined
+}
+
 bot.start(async ctx => {
     console.log('START')
 
-    const messageFrom = ctx.update.message.from
-    const messageChat = ctx.update.message.chat
+    const user = ctx.update.message.from
+    const chat = ctx.update.message.chat
 
-    console.log(messageFrom)
-    console.log(messageChat)
+    const namespace = getNamespace(chat)
+    
+    ctx.reply(`Seja bem vindo a lista de filmes de ${namespace}!`)
+
+    console.log(user)
+    console.log(chat)
+})
+
+bot.command('add', async ctx => {
+    const chat = ctx.update.message.chat;
+    const commandLength = ctx.update.message.entities[0].length;
+    const nomeFilme = ctx.update.message.text.substring(commandLength).trim()
+
+    console.log('ADD', ctx.update.message)
+    if(nomeFilme) {
+        console.log(nomeFilme)
+        ctx.reply(`"${nomeFilme}" added to ${chat.title}'s list`)
+    } else {
+        console.error('invalid name')
+        ctx.reply('Invalid name')
+    }
 })
 
 bot.launch()
