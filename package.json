@@ -4,6 +4,8 @@
   "description": "Telegram Bot to manage list of films to watch with friends.",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,5 +20,12 @@
   "bugs": {
     "url": "https://github.com/gera-software/geraflix/issues"
   },
-  "homepage": "https://github.com/gera-software/geraflix#readme"
+  "homepage": "https://github.com/gera-software/geraflix#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "telegraf": "^4.8.6"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
 }
