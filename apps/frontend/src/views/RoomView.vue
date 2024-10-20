@@ -16,7 +16,21 @@
             </div>
         </div>
         <div class="room-bottom-bar">
-            bottom bar
+            <IconButton />
+            <IconEmojiStars icon-color="white" />
+            <IconMicrophone icon-color="white" />
+            <IconMicrophoneSlash icon-color="white" />
+            <IconEllipsisVertical icon-color="white" />
+            <IconVideo icon-color="white"/>
+            <IconVideoSlash icon-color="white"/>
+            <IconUsers icon-color="white"/>
+            <IconFilm icon-color="white"/>
+            <IconFilmSlash icon-color="white"/>
+            <IconComments icon-color="white"/>
+            <IconDoorOpen icon-color="white"/>
+            <IconVolumeHigh icon-color="white"/>
+            <IconExpand icon-color="white"/>
+            <IconCompress icon-color="white"/>
             <button @click="toggleScreen">toggle screen perspective</button>
         </div>
     </div>
@@ -24,6 +38,21 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import IconButton from '../components/IconButton.vue';
+import IconMicrophone from '../components/icons/IconMicrophone.vue';
+import IconMicrophoneSlash from '../components/icons/IconMicrophoneSlash.vue';
+import IconEmojiStars from '../components/icons/IconEmojiStars.vue';
+import IconEllipsisVertical from '../components/icons/IconEllipsisVertical.vue';
+import IconVideoSlash from '../components/icons/IconVideoSlash.vue';
+import IconVideo from '../components/icons/IconVideo.vue';
+import IconUsers from '../components/icons/IconUsers.vue';
+import IconFilm from '../components/icons/IconFilm.vue';
+import IconComments from '../components/icons/IconComments.vue';
+import IconDoorOpen from '../components/icons/IconDoorOpen.vue';
+import IconVolumeHigh from '../components/icons/IconVolumeHigh.vue';
+import IconExpand from '../components/icons/IconExpand.vue';
+import IconCompress from '../components/icons/IconCompress.vue';
+import IconFilmSlash from '../components/icons/IconFilmSlash.vue';
 
 
 const hasPerspective = ref(true)
@@ -49,7 +78,7 @@ function toggleScreen() {
 }
 
 .room-bottom-bar {
-    background-color: yellow;
+    background-color: rgba(0, 0, 0, 0.5);
     height: 62px;
 }
 
