@@ -9,7 +9,7 @@
                 </div>
             </div>
             <div class="room-stage">
-                <h1>Room stage</h1>
+                <div class="stage-screen"></div>
             </div>
         </div>
         <div class="room-bottom-bar">
@@ -45,6 +45,8 @@
 
 .room-stage {
     background-color: violet;
+    display: grid;
+    place-items: center;
 }
 
 .room-seats {
@@ -82,9 +84,13 @@
     height: 100%;
     max-height: 100%;
     
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    display: grid;
+    place-items: center
+}
+
+.stage-screen {
+    background-color: black;
+    width: 90%;
+    height: 90%;
 }
 </style>
