@@ -9,7 +9,7 @@ const routes = [
     },
     {
         name: 'room',
-        path: '/room/:roomId',
+        path: '/rooms/:roomId',
         component: RoomViewVue,
     },
 ]
