@@ -1,5 +1,5 @@
 <template>
-    <div class="room-layout">
+    <div class="room-layout" :class="{ 'has-perspective':  hasPerspective }">
         <div class="room-container">
             <div class="room-seats">
                 <div class="scroll-area">
@@ -16,14 +16,21 @@
             </div>
         </div>
         <div class="room-bottom-bar">
-
             bottom bar
+            <button @click="toggleScreen">toggle screen perspective</button>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 
+
+const hasPerspective = ref(true)
+
+function toggleScreen() {
+    hasPerspective.value = !hasPerspective.value
+}
 </script>
 
 <style scoped>
@@ -103,6 +110,9 @@
     background-size: contain;
     background-position: center;
     box-shadow: -11px 7px 21px -10px rgba(0,0,0,0.98);
+
+    transform: rotateY(0);
+    transition: transform .5s ease-in;
 }
 
 .stage-screen .fuzzy-overlay {
@@ -128,5 +138,15 @@
     inset: 0;
     box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
     pointer-events: none;
+}
+
+
+.room-stage {
+    perspective: 90px;
+    perspective-origin: center left;
+}
+
+.has-perspective .stage-screen {
+    transform: rotateY(-2deg); 
 }
 </style>
