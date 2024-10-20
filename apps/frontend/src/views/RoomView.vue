@@ -2,7 +2,11 @@
     <div class="room-layout">
         <div class="room-container">
             <div class="room-seats">
-                <h1>Room seats</h1>
+                <div class="scroll-area">
+                    <div class="seats-grid">
+                        <div class="seat" v-for="n in 54">{{n}}</div>
+                    </div>
+                </div>
             </div>
             <div class="room-stage">
                 <h1>Room stage</h1>
@@ -31,6 +35,7 @@
     background-color: aqua;
     display: grid;
     grid-template-columns: 1fr 2fr;
+    overflow: hidden;
 }
 
 .room-bottom-bar {
@@ -44,5 +49,42 @@
 
 .room-seats {
     background-color: teal;
+    position: relative;
+    overflow: hidden;
+}
+
+.seats-grid {
+    background-color: slategray;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    padding: 60px 15px;
+    max-width: 385px;
+    margin: auto;
+    /* height: 100%; */
+}
+
+.seat {
+    background-color: slateblue;
+    width: 36px;
+    height: 36px;
+
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.scroll-area {
+    background-color: steelblue;
+    overflow-y: auto;
+    height: 100%;
+    max-height: 100%;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 </style>
