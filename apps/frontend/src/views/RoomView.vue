@@ -13,24 +13,29 @@
                     <div class="fuzzy-overlay"></div>
                     <div class="vignette"></div>
                 </div>
+                <div class="buttons-bar">
+                    <ButtonIcon title="Volume" variant="secondary">
+                        <IconVolumeHigh/>
+                    </ButtonIcon>
+                    <ButtonIcon title="Fullscreen" variant="secondary">
+                        <IconExpand/>
+                    </ButtonIcon>
+                </div>
             </div>
         </div>
         <div class="room-bottom-bar">
-            <IconButton />
-            <IconEmojiStars icon-color="white" />
-            <IconMicrophone icon-color="white" />
-            <IconMicrophoneSlash icon-color="white" />
-            <IconEllipsisVertical icon-color="white" />
-            <IconVideo icon-color="white"/>
-            <IconVideoSlash icon-color="white"/>
-            <IconUsers icon-color="white"/>
-            <IconFilm icon-color="white"/>
-            <IconFilmSlash icon-color="white"/>
-            <IconComments icon-color="white"/>
-            <IconDoorOpen icon-color="white"/>
-            <IconVolumeHigh icon-color="white"/>
-            <IconExpand icon-color="white"/>
-            <IconCompress icon-color="white"/>
+            <ButtonIcon title="status-off" variant="status-off">
+                <IconMicrophoneSlash/>
+            </ButtonIcon>
+            <ButtonIcon title="default" :disabled="true">
+                <IconVideoSlash/>
+            </ButtonIcon>
+            <ButtonIcon title="status-on" variant="status-on">
+                <IconFilm />
+            </ButtonIcon>
+            <ButtonIcon title="danger" variant="danger">
+                <IconDoorOpen />
+            </ButtonIcon>
             <button @click="toggleScreen">toggle screen perspective</button>
         </div>
     </div>
@@ -38,22 +43,13 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import IconButton from '../components/IconButton.vue';
-import IconMicrophone from '../components/icons/IconMicrophone.vue';
+import ButtonIcon from '../components/ButtonIcon.vue';
 import IconMicrophoneSlash from '../components/icons/IconMicrophoneSlash.vue';
-import IconEmojiStars from '../components/icons/IconEmojiStars.vue';
-import IconEllipsisVertical from '../components/icons/IconEllipsisVertical.vue';
 import IconVideoSlash from '../components/icons/IconVideoSlash.vue';
-import IconVideo from '../components/icons/IconVideo.vue';
-import IconUsers from '../components/icons/IconUsers.vue';
 import IconFilm from '../components/icons/IconFilm.vue';
-import IconComments from '../components/icons/IconComments.vue';
 import IconDoorOpen from '../components/icons/IconDoorOpen.vue';
 import IconVolumeHigh from '../components/icons/IconVolumeHigh.vue';
 import IconExpand from '../components/icons/IconExpand.vue';
-import IconCompress from '../components/icons/IconCompress.vue';
-import IconFilmSlash from '../components/icons/IconFilmSlash.vue';
-
 
 const hasPerspective = ref(true)
 
@@ -64,14 +60,13 @@ function toggleScreen() {
 
 <style scoped>
 .room-layout {
-    background-color: blueviolet;
     display: grid;
     grid-template-rows: 1fr 62px;
     height: 100vh;
+    background-color: #303030;
 }
 
 .room-container {
-    background-color: aqua;
     display: grid;
     grid-template-columns: 1fr 2fr;
     overflow: hidden;
@@ -80,10 +75,14 @@ function toggleScreen() {
 .room-bottom-bar {
     background-color: rgba(0, 0, 0, 0.5);
     height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
 }
 
 .room-stage {
-    background-color: #303030;
+    position: relative;
     display: grid;
     place-items: center;
 }
@@ -177,5 +176,14 @@ function toggleScreen() {
 
 .has-perspective .stage-screen {
     transform: rotateY(-2deg); 
+}
+
+.room-stage .buttons-bar {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    gap: 15px;
+    padding: 15px;
 }
 </style>

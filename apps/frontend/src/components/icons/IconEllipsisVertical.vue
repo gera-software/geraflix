@@ -12,5 +12,5 @@ interface Props {
     iconColor?: string
 }
 
-const { width = 6 , height = 20, iconColor = 'black' } = defineProps<Props>()
+const { width = 6 , height = 20, iconColor = 'currentColor' } = defineProps<Props>()
 </script>
