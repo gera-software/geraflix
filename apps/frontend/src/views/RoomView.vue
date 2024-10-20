@@ -9,7 +9,10 @@
                 </div>
             </div>
             <div class="room-stage">
-                <div class="stage-screen"></div>
+                <div class="stage-screen">
+                    <div class="fuzzy-overlay"></div>
+                    <div class="vignette"></div>
+                </div>
             </div>
         </div>
         <div class="room-bottom-bar">
@@ -44,7 +47,7 @@
 }
 
 .room-stage {
-    background-color: violet;
+    background-color: #303030;
     display: grid;
     place-items: center;
 }
@@ -89,8 +92,41 @@
 }
 
 .stage-screen {
-    background-color: black;
+    background-color: rgb(0, 0, 0);
     width: 90%;
     height: 90%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    background-color: black;
+    background-image: url('../assets/standby.png');
+    background-size: contain;
+    background-position: center;
+    box-shadow: -11px 7px 21px -10px rgba(0,0,0,0.98);
+}
+
+.stage-screen .fuzzy-overlay {
+    position: absolute;
+    inset: -200%;
+    opacity: 25%;
+    background-image: url('../assets/noise.png');
+    animation: shift .2s linear infinite both;
+    pointer-events: none;
+}
+
+@keyframes shift {
+    0% {
+        transform: translateX(0%) translateY(0%);
+    }
+    100% {
+        transform: translateX(-10%) translateY(-10%);
+    }
+}
+
+.stage-screen .vignette {
+    position: absolute;
+    inset: 0;
+    box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
+    pointer-events: none;
 }
 </style>
