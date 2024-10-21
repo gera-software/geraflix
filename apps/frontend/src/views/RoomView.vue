@@ -1,5 +1,5 @@
 <template>
-    <div class="room-layout" :class="{ 'has-perspective':  hasPerspective }">
+    <div class="room-layout" :class="{ 'is-stage-fullscreen':  isStageFullscreen }">
         <div class="room-container">
             <div class="room-seats">
                 <div class="scroll-area">
@@ -8,7 +8,7 @@
                     </div>
                 </div>
             </div>
-            <div class="room-stage">
+            <div ref="elStage" class="room-stage">
                 <div class="stage-screen">
                     <div class="fuzzy-overlay"></div>
                     <div class="vignette"></div>
@@ -17,8 +17,9 @@
                     <ButtonIcon title="Volume" variant="secondary">
                         <IconVolumeHigh/>
                     </ButtonIcon>
-                    <ButtonIcon title="Fullscreen" variant="secondary">
-                        <IconExpand/>
+                    <ButtonIcon :title="isStageFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'" variant="secondary" @click="toggleFullScreen">
+                        <IconCompress v-if="isStageFullscreen" />
+                        <IconExpand v-else />
                     </ButtonIcon>
                 </div>
             </div>
@@ -41,7 +42,6 @@
             <ButtonIcon title="danger" variant="danger">
                 <IconDoorOpen />
             </ButtonIcon>
-            <button @click="toggleScreen">toggle screen perspective</button>
         </div>
     </div>
 </template>
@@ -59,12 +59,13 @@ import Seat from '../components/Seat.vue';
 import type { IAttendee, IHost, ISeat } from '../types';
 import AvatarOccupant from '../components/AvatarOccupant.vue';
 import BadgeConnectionStatus from '../components/BadgeConnectionStatus.vue';
+import IconCompress from '../components/icons/IconCompress.vue';
 
-const hasPerspective = ref(true)
+import { useFullscreen } from '@vueuse/core'
 
-function toggleScreen() {
-    hasPerspective.value = !hasPerspective.value
-}
+const elStage = ref<HTMLElement | null>(null)
+
+const { isFullscreen: isStageFullscreen, toggle: toggleFullScreen } = useFullscreen(elStage)
 
 function generateSeatsId(rows: number, cols: number): string[] {
     return Array.from({ length: rows * cols }, (_, index) => {
@@ -127,6 +128,7 @@ seats.value[8].occupant = {
     position: relative;
     display: grid;
     place-items: center;
+    background-color: orange;
 }
 
 .room-seats {
@@ -166,8 +168,8 @@ seats.value[8].occupant = {
     background-position: center;
     box-shadow: -11px 7px 21px -10px rgba(0,0,0,0.98);
 
-    transform: rotateY(0);
-    transition: transform .5s ease-in;
+    transform: rotateY(-2deg); 
+    transition: transform .5s ease-in, width .5s ease-in .5s, height .5s ease-in .5s;
 }
 
 .stage-screen .fuzzy-overlay {
@@ -201,8 +203,10 @@ seats.value[8].occupant = {
     perspective-origin: center left;
 }
 
-.has-perspective .stage-screen {
-    transform: rotateY(-2deg); 
+.is-stage-fullscreen .stage-screen {
+    transform: rotateY(0);
+    width: 100%;
+    height: 100%;
 }
 
 .room-stage .buttons-bar {
