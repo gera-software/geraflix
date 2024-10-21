@@ -128,7 +128,6 @@ seats.value[8].occupant = {
     position: relative;
     display: grid;
     place-items: center;
-    background-color: orange;
 }
 
 .room-seats {
@@ -169,7 +168,11 @@ seats.value[8].occupant = {
     box-shadow: -11px 7px 21px -10px rgba(0,0,0,0.98);
 
     transform: rotateY(-2deg); 
-    transition: transform .5s ease-in, width .5s ease-in .5s, height .5s ease-in .5s;
+    transition: 
+        transform .3s ease-in .3s, 
+        width .3s ease-in 0s, 
+        height .3s ease-in 0s,
+        border-radius .1s linear;
 }
 
 .stage-screen .fuzzy-overlay {
@@ -177,11 +180,11 @@ seats.value[8].occupant = {
     inset: -200%;
     opacity: 25%;
     background-image: url('../assets/noise.png');
-    animation: shift .2s linear infinite both;
+    animation: fuzzy-overlay .2s linear infinite both;
     pointer-events: none;
 }
 
-@keyframes shift {
+@keyframes fuzzy-overlay {
     0% {
         transform: translateX(0%) translateY(0%);
     }
@@ -204,9 +207,16 @@ seats.value[8].occupant = {
 }
 
 .is-stage-fullscreen .stage-screen {
+    border-radius: 0px;
     transform: rotateY(0);
     width: 100%;
     height: 100%;
+
+    transition: 
+        transform .3s ease-in 0s, 
+        width .3s ease-in .3s, 
+        height .3s ease-in .3s,
+        border-radius 0s linear .6s;
 }
 
 .room-stage .buttons-bar {
