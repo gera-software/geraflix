@@ -29,12 +29,12 @@ const rooms = new Map()
 
 function createRoom(id) {
     rooms.set(id, new Map())
-    console.log(rooms)
+    console.log('createRoom()', id, rooms)
 }
 
 function deleteRoom(id) {
     rooms.delete(id)
-    console.log(rooms)
+    console.log('deleteRoom()', id, rooms)
 }
 
 /**
@@ -43,7 +43,7 @@ function deleteRoom(id) {
  */
 function joinUser(user) {
     rooms.get(user.roomId).set(user.socketId, user)
-    console.log(rooms)
+    console.log('joinUser()', user, rooms)
 }
 
 function getUser(roomId, socketId) {
@@ -52,14 +52,15 @@ function getUser(roomId, socketId) {
 
 function leaveUser(roomId, socketId) {
     rooms.get(roomId).delete(socketId)
-    console.log(rooms)
+    console.log('leaveUser()', socketId, roomId, rooms)
 }
 
 io.on('connection', socket => {
 
     socket.on('create-meeting', (callback) => {
-        console.log('[create-meeting]')
-        callback({ roomId: uuidV4() })
+        const roomId = uuidV4()
+        console.log('[create-meeting]', roomId)
+        callback({ roomId })
     } )
 
     socket.on('join-meeting', (roomId, user, callback) => {
@@ -85,10 +86,10 @@ io.on('connection', socket => {
         // TODO rename to joined-meeting
         socket.to(roomId).emit('user-connected', user)
 
-        socket.on('disconnect', () => {
-            console.log('### disconnect', roomId, userId)
-            // socket.to(roomId).emit('user-disconnected', userId)
-        })
+        // socket.on('disconnect', () => {
+        //     console.log('### disconnect', roomId, userId)
+        //     // socket.to(roomId).emit('user-disconnected', userId)
+        // })
     })
 
     socket.on('leave-meeting', (roomId, userId) => {
@@ -115,12 +116,12 @@ io.of("/").adapter.on("delete-room", (roomId) => {
 
 io.of("/").adapter.on("join-room", (roomId, socketId) => {
     // if(room === id) return // ignora global room events
-    console.log(`!!! socket ${socketId} has joined room ${roomId}`);
+    console.log(`#### socket ${socketId} has joined room ${roomId}`);
 });
 
 io.of("/").adapter.on("leave-room", (roomId, socketId) => {
     // if(room === id) return // ignore global room events
-    console.log(`!!! socket ${socketId} has leaved room ${roomId}`);
+    console.log(`#### socket ${socketId} has leaved room ${roomId}`);
     const user = {...getUser(roomId, socketId)} // shallow copy
     leaveUser(roomId, socketId)
 
