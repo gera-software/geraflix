@@ -1,12 +1,12 @@
 <template>
     <div class="seat">
         <div class="seat--empty">{{seat.id}}</div>
-        <Occupant v-if="seat.occupant" :occupant="seat.occupant"/>
+        <AvatarOccupant v-if="seat.occupant" :occupant="seat.occupant"/>
     </div>
 </template>
 <script setup lang="ts">
 import type { ISeat } from '../types';
-import Occupant from './Occupant.vue';
+import AvatarOccupant from './AvatarOccupant.vue';
 
 interface Props {
     seat: ISeat

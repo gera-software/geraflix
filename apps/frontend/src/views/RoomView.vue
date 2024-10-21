@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class="room-bottom-bar">
-            <Occupant v-if="seats[0].occupant" :occupant="seats[0].occupant"/>
+            <AvatarOccupant v-if="seats[0].occupant" :occupant="seats[0].occupant"/>
             <ButtonIcon title="status-off" variant="status-off">
                 <IconMicrophoneSlash/>
             </ButtonIcon>
@@ -53,7 +53,7 @@ import IconVolumeHigh from '../components/icons/IconVolumeHigh.vue';
 import IconExpand from '../components/icons/IconExpand.vue';
 import Seat from '../components/Seat.vue';
 import type { IAttendee, IHost, ISeat } from '../types';
-import Occupant from '../components/Occupant.vue';
+import AvatarOccupant from '../components/AvatarOccupant.vue';
 
 const hasPerspective = ref(true)
 
@@ -94,7 +94,7 @@ seats.value[8].occupant = {
         color: '#42D1EB'
     },
     connectionStatus: true,
-    micStatus: true,
+    micStatus: false,
     camStatus: false,
 } as IAttendee
 </script>

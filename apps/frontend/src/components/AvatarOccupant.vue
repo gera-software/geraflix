@@ -1,6 +1,6 @@
 <template>
     <div class="occupant">
-        <Avatar :user="occupant.user" />
+        <BaseAvatar :name="occupant.user.name" :color="occupant.user.color" />
         <div class="connection-status" :class="{ 'connection-status--online': occupant.connectionStatus}" :title="occupant.connectionStatus ? 'online' : 'offline'"></div>
         <div v-if="occupant.connectionStatus && !occupant.micStatus" class="mic-status" title="mic off">
             <IconMicrophoneSlash :width="15" :height="12" icon-color="#FF4242"/>
@@ -8,7 +8,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import Avatar from './Avatar.vue';
+import BaseAvatar from './BaseAvatar.vue';
 import type { IOccupant } from '../types';
 import IconMicrophoneSlash from './icons/IconMicrophoneSlash.vue';
 

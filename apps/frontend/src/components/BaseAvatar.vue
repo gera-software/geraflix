@@ -1,25 +1,25 @@
 <template>
-    <div class="avatar" :title="user.name" :style="style">
-        {{  sigla }}
+    <div class="avatar" :title="name" :style="style">
+        {{ sigla }}
     </div>
 </template>
 <script lang="ts" setup>
 import { computed } from 'vue';
-import type { IUser } from '../types';
 
 interface Props {
-    user: IUser
+    name: string,
+    color: string
 }
 
-const { user } = defineProps<Props>()
+const { name, color } = defineProps<Props>()
 
 const sigla = computed(() => {
-    return user.name.split(' ').map(word => word[0]).join('').slice(0, 2)
+    return name.split(' ').map(word => word[0]).join('').slice(0, 2)
 })
 
 const style = computed(() => {
     return {
-        backgroundColor: user.color
+        backgroundColor: color
     }
 })
 
