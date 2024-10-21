@@ -79,8 +79,8 @@ const seats = computed<ISeat[]>(() => {
 })
 
 seats.value[0].occupant = {
+    kind: 'host',
     id: 'aad',
-    isHost: true,
     name: 'Gilmar Andrade',
     color: '#B03AFF',
     connectionStatus: true,
@@ -90,6 +90,7 @@ seats.value[0].occupant = {
 } as IHost
 
 seats.value[8].occupant = {
+    kind: 'attendee',
     id: 'wsdf',
     name: 'Arnaldo Antunes',
     color: '#42D1EB',
