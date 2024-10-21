@@ -4,7 +4,7 @@
             <div class="room-seats">
                 <div class="scroll-area">
                     <div class="seats-grid">
-                        <div class="seat" v-for="n in 54">{{n}}</div>
+                        <Seat class="seat" v-for="n of seats" :key="n" :id="''+n"></Seat>
                     </div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import ButtonIcon from '../components/ButtonIcon.vue';
 import IconMicrophoneSlash from '../components/icons/IconMicrophoneSlash.vue';
 import IconVideoSlash from '../components/icons/IconVideoSlash.vue';
@@ -53,6 +53,7 @@ import IconVolumeHigh from '../components/icons/IconVolumeHigh.vue';
 import IconExpand from '../components/icons/IconExpand.vue';
 import Avatar from '../components/Avatar.vue';
 import { IUser } from '../types';
+import Seat from '../components/Seat.vue';
 
 const hasPerspective = ref(true)
 
@@ -64,6 +65,18 @@ const user = ref<IUser>({
     id: 'aad',
     name: 'Gilmar Andrade',
     color: '#B03AFF'
+})
+
+function generateSeatsId(rows: number, cols: number): string[] {
+    return Array.from({ length: rows * cols }, (_, index) => {
+        const row = String.fromCharCode(65 + Math.floor(index / cols)); // "A", "B", "C", etc.
+        const col = (index % cols) + 1; // "1", "2", "3", etc.
+        return `${row}${col}`;
+    });
+}
+
+const seats = computed(() => {
+    return generateSeatsId(9, 6)
 })
 </script>
 
@@ -97,13 +110,11 @@ const user = ref<IUser>({
 }
 
 .room-seats {
-    background-color: teal;
     position: relative;
     overflow: hidden;
 }
 
 .seats-grid {
-    background-color: slategray;
     display: flex;
     flex-wrap: wrap;
     gap: 25px;
@@ -114,19 +125,10 @@ const user = ref<IUser>({
 }
 
 .seat {
-    background-color: slateblue;
-    width: 36px;
-    height: 36px;
-
-    border-radius: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    
 }
 
 .scroll-area {
-    background-color: steelblue;
     overflow-y: auto;
     height: 100%;
     max-height: 100%;
