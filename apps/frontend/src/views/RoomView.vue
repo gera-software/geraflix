@@ -80,8 +80,8 @@ seats.value[0].occupant = {
         name: 'Gilmar Andrade',
         color: '#B03AFF'
     },
-    connectionStatus: false,
-    micStatus: false,
+    connectionStatus: true,
+    micStatus: true,
     camStatus: false,
     screenShareStatus: true
 } as IHost
