@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class="room-bottom-bar">
-            <Avatar :user="user" />
+            <Occupant v-if="seats[0].occupant" :occupant="seats[0].occupant"/>
             <ButtonIcon title="status-off" variant="status-off">
                 <IconMicrophoneSlash/>
             </ButtonIcon>
@@ -51,21 +51,15 @@ import IconFilm from '../components/icons/IconFilm.vue';
 import IconDoorOpen from '../components/icons/IconDoorOpen.vue';
 import IconVolumeHigh from '../components/icons/IconVolumeHigh.vue';
 import IconExpand from '../components/icons/IconExpand.vue';
-import Avatar from '../components/Avatar.vue';
 import Seat from '../components/Seat.vue';
-import type { IAttendee, IHost, ISeat, IUser } from '../types';
+import type { IAttendee, IHost, ISeat } from '../types';
+import Occupant from '../components/Occupant.vue';
 
 const hasPerspective = ref(true)
 
 function toggleScreen() {
     hasPerspective.value = !hasPerspective.value
 }
-
-const user = ref<IUser>({
-    id: 'aad',
-    name: 'Gilmar Andrade',
-    color: '#B03AFF'
-})
 
 function generateSeatsId(rows: number, cols: number): string[] {
     return Array.from({ length: rows * cols }, (_, index) => {
