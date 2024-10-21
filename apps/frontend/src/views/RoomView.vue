@@ -26,7 +26,7 @@
         <div class="room-bottom-bar">
             <AvatarOccupant v-if="seats[0].occupant" :occupant="seats[0].occupant">
                 <template v-slot:badges>
-                    <BaseBadge style="position: absolute; bottom: -2px; right: -4px;" is-dot :background-color="seats[0].occupant.connectionStatus ? '#2DAA4E' : '#FF4242'" :title="seats[0].occupant.connectionStatus ? 'online' : 'offline'"/>
+                    <BadgeConnectionStatus :connection-status="seats[0].occupant.connectionStatus" />
                 </template>
             </AvatarOccupant>
             <ButtonIcon title="status-off" variant="status-off">
@@ -58,7 +58,7 @@ import IconExpand from '../components/icons/IconExpand.vue';
 import Seat from '../components/Seat.vue';
 import type { IAttendee, IHost, ISeat } from '../types';
 import AvatarOccupant from '../components/AvatarOccupant.vue';
-import BaseBadge from '../components/BaseBadge.vue';
+import BadgeConnectionStatus from '../components/BadgeConnectionStatus.vue';
 
 const hasPerspective = ref(true)
 
