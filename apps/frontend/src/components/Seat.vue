@@ -1,7 +1,7 @@
 <template>
     <div class="seat">
-        <div v-if="seat.user">
-            <Avatar :user="seat.user"/>
+        <div v-if="seat.occupant">
+            <Avatar :user="seat.occupant.user"/>
         </div>
         <div v-else class="seat--empty">{{seat.id}}</div>
     </div>

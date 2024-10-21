@@ -4,7 +4,7 @@
             <div class="room-seats">
                 <div class="scroll-area">
                     <div class="seats-grid">
-                        <Seat class="seat" v-for="seat of seats" :key="seat.id" :seat="seat"></Seat>
+                        <Seat v-for="seat of seats" :key="seat.id" :seat="seat"></Seat>
                     </div>
                 </div>
             </div>
@@ -53,7 +53,7 @@ import IconVolumeHigh from '../components/icons/IconVolumeHigh.vue';
 import IconExpand from '../components/icons/IconExpand.vue';
 import Avatar from '../components/Avatar.vue';
 import Seat from '../components/Seat.vue';
-import type { ISeat, IUser } from '../types';
+import type { IAttendee, IHost, ISeat, IUser } from '../types';
 
 const hasPerspective = ref(true)
 
@@ -79,17 +79,30 @@ const seats = computed<ISeat[]>(() => {
     return generateSeatsId(9, 6).map(id => ({ id: id }))
 })
 
-seats.value[0].user = {
-    id: 'aad',
-    name: 'Gilmar Andrade',
-    color: '#B03AFF'
-}
+seats.value[0].occupant = {
+    kind: 'host',
+    user: {
+        id: 'aad',
+        name: 'Gilmar Andrade',
+        color: '#B03AFF'
+    },
+    connectionStatus: true,
+    micStatus: true,
+    camStatus: false,
+    screenShareStatus: true
+} as IHost
 
-seats.value[8].user = {
-    id: 'wsdf',
-    name: 'Arnaldo Antunes',
-    color: '#42D1EB'
-}
+seats.value[8].occupant = {
+    kind: 'attendee',
+    user: {
+        id: 'wsdf',
+        name: 'Arnaldo Antunes',
+        color: '#42D1EB'
+    },
+    connectionStatus: false,
+    micStatus: false,
+    camStatus: false,
+} as IAttendee
 </script>
 
 <style scoped>
@@ -134,10 +147,6 @@ seats.value[8].user = {
     max-width: 385px;
     margin: auto;
     /* height: 100%; */
-}
-
-.seat {
-    
 }
 
 .scroll-area {
