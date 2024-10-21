@@ -15,22 +15,22 @@
                 </div>
                 <div class="buttons-bar">
                     {{ sliderValue }}
-                    <ButtonSlider title="Volume" variant="secondary" v-model="sliderValue">
+                    <BaseButtonSlider title="Volume" variant="secondary" v-model="sliderValue">
                         <template #icon>
                             <IconVolumeXMark v-if="sliderValue == 0"/>
                             <IconVolumeHigh v-else />
                         </template>
-                    </ButtonSlider>
-                    <ButtonSlider title="Volume" variant="secondary" v-model="sliderValue">
+                    </BaseButtonSlider>
+                    <BaseButtonSlider title="Volume" variant="secondary" v-model="sliderValue">
                         <template #icon>
                             <IconVolumeXMark v-if="sliderValue == 0"/>
                             <IconVolumeHigh v-else />
                         </template>
-                    </ButtonSlider>
-                    <ButtonIcon :title="isStageFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'" variant="secondary" @click="toggleFullScreen">
+                    </BaseButtonSlider>
+                    <BaseButtonIcon :title="isStageFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'" variant="secondary" @click="toggleFullScreen">
                         <IconCompress v-if="isStageFullscreen" />
                         <IconExpand v-else />
-                    </ButtonIcon>
+                    </BaseButtonIcon>
                 </div>
             </div>
         </div>
@@ -43,25 +43,25 @@
                     <BadgeConnectionStatus :connection-status="seats[0].occupant.connectionStatus" />
                 </template>
             </AvatarOccupant>
-            <ButtonIcon title="status-off" variant="status-off">
+            <BaseButtonIcon title="status-off" variant="status-off">
                 <IconMicrophoneSlash/>
-            </ButtonIcon>
-            <ButtonIcon title="default" :disabled="true">
+            </BaseButtonIcon>
+            <BaseButtonIcon title="default" :disabled="true">
                 <IconVideoSlash/>
-            </ButtonIcon>
-            <ButtonIcon title="status-on" variant="status-on">
+            </BaseButtonIcon>
+            <BaseButtonIcon title="status-on" variant="status-on">
                 <IconFilm />
-            </ButtonIcon>
-            <ButtonIcon title="danger" variant="danger">
+            </BaseButtonIcon>
+            <BaseButtonIcon title="danger" variant="danger">
                 <IconDoorOpen />
-            </ButtonIcon>
+            </BaseButtonIcon>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import ButtonIcon from '../components/ButtonIcon.vue';
+import BaseButtonIcon from '../components/BaseButtonIcon.vue';
 import IconMicrophoneSlash from '../components/icons/IconMicrophoneSlash.vue';
 import IconVideoSlash from '../components/icons/IconVideoSlash.vue';
 import IconFilm from '../components/icons/IconFilm.vue';
@@ -76,7 +76,7 @@ import IconCompress from '../components/icons/IconCompress.vue';
 
 import { useFullscreen } from '@vueuse/core'
 import Slider from '../components/Slider.vue';
-import ButtonSlider from '../components/ButtonSlider.vue';
+import BaseButtonSlider from '../components/BaseButtonSlider.vue';
 import IconVolumeXMark from '../components/icons/IconVolumeXMark.vue';
 
 const sliderValue = ref(0.4)
