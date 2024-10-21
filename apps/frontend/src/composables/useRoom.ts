@@ -29,14 +29,16 @@ export function useRoom() {
 
         if(id) {
             rId.value = id
+
             return
         }
 
         try {
             const response = await getRandomId()
-            console.log('ROOM ID NOT DEFINED, CREATING RANDOM MEETING ID', response)
-    
+            console.log('ROOM ID NOT DEFINED, CREATING RANDOM MEETING ID')
+            
             rId.value = response.roomId
+            console.log('ROOM MEETING ID', rId.value)
 
         } catch (error) {
             console.error(error);

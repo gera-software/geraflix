@@ -23,7 +23,9 @@
                 </div>
             </div>
         </div>
-        <div class="room-bottom-bar">            
+        <div class="room-bottom-bar">
+            {{ roomId }}
+            {{ size }} users
             <AvatarOccupant v-if="meUser" :occupant="meUser">
                 <template v-slot:badges>
                     <BadgeConnectionStatus :connection-status="meUser.connectionStatus" />
@@ -49,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import BaseButtonIcon from '../components/BaseButtonIcon.vue';
 import IconMicrophoneSlash from '../components/icons/IconMicrophoneSlash.vue';
 import IconVideoSlash from '../components/icons/IconVideoSlash.vue';
@@ -67,7 +69,26 @@ import VolumeButtonSlider from '../components/VolumeButtonSlider.vue';
 import IconMicrophone from '../components/icons/IconMicrophone.vue';
 import IconFilmSlash from '../components/icons/IconFilmSlash.vue';
 
-import { state } from '../config/socket';
+import { useRoute } from 'vue-router';
+import { useRoomStore } from '../stores/useRoomStore';
+
+
+
+
+const route = useRoute();
+
+const { room } = useRoomStore()
+const { rId: roomId, clients, state } = toRefs(room)
+
+room.setRoomId(''+route.params.roomId)
+room.active = true
+
+const connected = computed(() => state.value.connected);
+const size = computed(() => clients.value.size);
+
+
+
+
 
 const streamVolume = ref(0.4)
 
@@ -123,8 +144,8 @@ const meUser = ref<IHost>({
     screenShareStatus: false
 })
 
-watch(state, () => {
-    meUser.value.connectionStatus = state.connected
+watch(() => connected, () => {
+    meUser.value.connectionStatus = connected.value
 })
 
 function toggleMyMic() {
@@ -158,6 +179,7 @@ function toggleMySharedScreen() {
     align-items: center;
     justify-content: center;
     gap: 15px;
+    color: white;
 }
 
 .room-stage {
