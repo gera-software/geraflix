@@ -14,19 +14,8 @@
                     <div class="vignette"></div>
                 </div>
                 <div class="buttons-bar">
-                    {{ sliderValue }}
-                    <BaseButtonSlider title="Volume" variant="secondary" v-model="sliderValue">
-                        <template #icon>
-                            <IconVolumeXMark v-if="sliderValue == 0"/>
-                            <IconVolumeHigh v-else />
-                        </template>
-                    </BaseButtonSlider>
-                    <BaseButtonSlider title="Volume" variant="secondary" v-model="sliderValue">
-                        <template #icon>
-                            <IconVolumeXMark v-if="sliderValue == 0"/>
-                            <IconVolumeHigh v-else />
-                        </template>
-                    </BaseButtonSlider>
+                    <VolumeButtonSlider variant="secondary" v-model="streamVolume" />
+                   
                     <BaseButtonIcon :title="isStageFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'" variant="secondary" @click="toggleFullScreen">
                         <IconCompress v-if="isStageFullscreen" />
                         <IconExpand v-else />
@@ -34,10 +23,7 @@
                 </div>
             </div>
         </div>
-        <div class="room-bottom-bar">
-            {{sliderValue}}
-
-            
+        <div class="room-bottom-bar">            
             <AvatarOccupant v-if="seats[0].occupant" :occupant="seats[0].occupant">
                 <template v-slot:badges>
                     <BadgeConnectionStatus :connection-status="seats[0].occupant.connectionStatus" />
@@ -66,7 +52,6 @@ import IconMicrophoneSlash from '../components/icons/IconMicrophoneSlash.vue';
 import IconVideoSlash from '../components/icons/IconVideoSlash.vue';
 import IconFilm from '../components/icons/IconFilm.vue';
 import IconDoorOpen from '../components/icons/IconDoorOpen.vue';
-import IconVolumeHigh from '../components/icons/IconVolumeHigh.vue';
 import IconExpand from '../components/icons/IconExpand.vue';
 import Seat from '../components/Seat.vue';
 import type { IAttendee, IHost, ISeat } from '../types';
@@ -75,15 +60,11 @@ import BadgeConnectionStatus from '../components/BadgeConnectionStatus.vue';
 import IconCompress from '../components/icons/IconCompress.vue';
 
 import { useFullscreen } from '@vueuse/core'
-import Slider from '../components/Slider.vue';
-import BaseButtonSlider from '../components/BaseButtonSlider.vue';
-import IconVolumeXMark from '../components/icons/IconVolumeXMark.vue';
+import VolumeButtonSlider from '../components/VolumeButtonSlider.vue';
 
-const sliderValue = ref(0.4)
+const streamVolume = ref(0.4)
 
-function handleSlideChange(value: number) {
-    console.log('slide changed', value)
-}
+
 
 const elStage = ref<HTMLElement | null>(null)
 

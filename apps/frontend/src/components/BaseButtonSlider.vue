@@ -2,7 +2,6 @@
     <button class="button-slider" :class="{ 'button-slider--secondary': variant == 'secondary', 'button-slider--danger': variant == 'danger', 'button-slider--status-on': variant == 'status-on', 'button-slider--status-off': variant == 'status-off'}" :disabled="disabled">
         <slot name="icon">
         </slot>
-        {{ sliderValue }}
         <Slider style="width: 100px;" v-model="sliderValue" :min="min" :max="max" :disabled="disabled" />
     </button>
 </template>
@@ -25,7 +24,6 @@ const { variant = null, disabled = false, min = 0, max = 1, modelValue } = defin
 const sliderValue = ref(modelValue)
 
 watch(() => modelValue, () => {
-    console.log('model value changed', modelValue)
     sliderValue.value = modelValue
 })
 
@@ -94,8 +92,5 @@ watch(sliderValue, () => {
     background-color: rgba(255, 66, 66, 0.4);
     color: #FF4242;
 }
-
-
-
 
 </style>
