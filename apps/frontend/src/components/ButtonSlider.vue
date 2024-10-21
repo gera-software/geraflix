@@ -1,17 +1,37 @@
 <template>
     <button class="button-slider" :class="{ 'button-slider--secondary': variant == 'secondary', 'button-slider--danger': variant == 'danger', 'button-slider--status-on': variant == 'status-on', 'button-slider--status-off': variant == 'status-off'}" :disabled="disabled">
-        <slot>
+        <slot name="icon">
         </slot>
+        {{ sliderValue }}
+        <Slider style="width: 100px;" v-model="sliderValue" :min="min" :max="max" :disabled="disabled" />
     </button>
 </template>
 <script lang="ts" setup>
+import { ref, watch } from 'vue';
+import Slider from './Slider.vue';
 
 interface Props {
     variant?: 'secondary' | 'danger' | 'status-on' | 'status-off'
+    min?: number
+    max?: number
     disabled?: boolean
+    modelValue: number
 }
 
-const { variant = null, disabled = false } = defineProps<Props>()
+const emit = defineEmits(['update:modelValue'])
+
+const { variant = null, disabled = false, min = 0, max = 1, modelValue } = defineProps<Props>()
+
+const sliderValue = ref(modelValue)
+
+watch(() => modelValue, () => {
+    console.log('model value changed', modelValue)
+    sliderValue.value = modelValue
+})
+
+watch(sliderValue, () => {
+    emit('update:modelValue', sliderValue.value)
+})
 </script>
 <style scoped>
 .button-slider {

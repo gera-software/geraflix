@@ -14,10 +14,18 @@
                     <div class="vignette"></div>
                 </div>
                 <div class="buttons-bar">
-                    <ButtonSlider title="Volume" variant="secondary">
-                        <IconVolumeXMark v-if="sliderValue == 0"/>
-                        <IconVolumeHigh v-else />
-                        <Slider style="width: 100px;" v-model="sliderValue" :min="0" :max="1" />
+                    {{ sliderValue }}
+                    <ButtonSlider title="Volume" variant="secondary" v-model="sliderValue">
+                        <template #icon>
+                            <IconVolumeXMark v-if="sliderValue == 0"/>
+                            <IconVolumeHigh v-else />
+                        </template>
+                    </ButtonSlider>
+                    <ButtonSlider title="Volume" variant="secondary" v-model="sliderValue">
+                        <template #icon>
+                            <IconVolumeXMark v-if="sliderValue == 0"/>
+                            <IconVolumeHigh v-else />
+                        </template>
                     </ButtonSlider>
                     <ButtonIcon :title="isStageFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'" variant="secondary" @click="toggleFullScreen">
                         <IconCompress v-if="isStageFullscreen" />
@@ -71,7 +79,7 @@ import Slider from '../components/Slider.vue';
 import ButtonSlider from '../components/ButtonSlider.vue';
 import IconVolumeXMark from '../components/icons/IconVolumeXMark.vue';
 
-const sliderValue = ref(0)
+const sliderValue = ref(0.4)
 
 function handleSlideChange(value: number) {
     console.log('slide changed', value)
