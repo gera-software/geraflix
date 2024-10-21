@@ -117,7 +117,7 @@ const seats = computed<ISeat[]>(() => {
 })
 
 
-seats.value[0].occupant = {
+const occupant1: IHost = {
     kind: 'host',
     id: 'aad',
     name: 'Gilmar Andrade',
@@ -125,10 +125,17 @@ seats.value[0].occupant = {
     connectionStatus: true,
     micStatus: false,
     camStatus: false,
-    screenShareStatus: false
-} as IHost
+    screenShareStatus: false,
 
-seats.value[8].occupant = {
+    roomId: '',
+    socketId: '',
+    peerId: ''
+}
+
+seats.value[0].occupant = occupant1
+
+
+const occupant2: IAttendee = {
     kind: 'attendee',
     id: 'wsdf',
     name: 'Arnaldo Antunes',
@@ -136,7 +143,13 @@ seats.value[8].occupant = {
     connectionStatus: false,
     micStatus: true,
     camStatus: false,
-} as IAttendee
+
+    roomId: '',
+    socketId: '',
+    peerId: ''
+}
+
+seats.value[8].occupant = occupant2
 
 
 const meUser = ref<IHost>({
@@ -147,7 +160,11 @@ const meUser = ref<IHost>({
     connectionStatus: true,
     micStatus: false,
     camStatus: false,
-    screenShareStatus: false
+    screenShareStatus: false,
+
+    roomId: '',
+    socketId: '',
+    peerId: ''
 })
 
 watch(connected, () => {

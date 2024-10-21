@@ -9,6 +9,10 @@ interface IOccupant extends IUser {
     connectionStatus: boolean
     micStatus: boolean
     camStatus: boolean
+
+    roomId: string
+    socketId: string
+    peerId: string
 }
 
 interface IAttendee extends IOccupant {
