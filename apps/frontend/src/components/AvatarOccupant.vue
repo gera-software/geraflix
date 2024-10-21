@@ -11,12 +11,12 @@
 </template>
 <script setup lang="ts">
 import BaseAvatar from './BaseAvatar.vue';
-import type { IOccupant } from '../types';
+import type { IAttendee } from '../types';
 import BadgeConnectionStatus from './BadgeConnectionStatus.vue';
 import BadgeMicStatus from './BadgeMicStatus.vue';
 
 interface Props {
-    occupant: IOccupant
+    occupant: IAttendee
 }
 
 const { occupant } = defineProps<Props>()

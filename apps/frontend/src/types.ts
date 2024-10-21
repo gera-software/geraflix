@@ -1,31 +1,27 @@
-interface IOccupant {
+interface IUser {
     id: string
-    kind: string
     name: string
     color: string
+}
+
+interface IAttendee extends IUser {
     connectionStatus: boolean
     micStatus: boolean
     camStatus: boolean
 }
 
-interface IHost extends IOccupant {
-    kind: 'host'
+interface IHost extends IAttendee {
+    isHost: boolean
     screenShareStatus: boolean
 }
 
-interface IAttendee extends IOccupant {
-    kind: 'attendee'
-}
-
-
 interface ISeat {
     id: string,
-    occupant?: IOccupant
+    occupant?: IAttendee
 }
 
 export type {
     IHost,
     IAttendee,
-    IOccupant,
     ISeat
 }
