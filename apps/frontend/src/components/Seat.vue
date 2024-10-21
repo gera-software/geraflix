@@ -1,11 +1,17 @@
 <template>
     <div class="seat">
-        <div class="seat--empty">{{id}}</div>
+        <div v-if="seat.user">
+            <Avatar :user="seat.user"/>
+        </div>
+        <div v-else class="seat--empty">{{seat.id}}</div>
     </div>
 </template>
 <script setup lang="ts">
+import type { ISeat } from '../types';
+import Avatar from './Avatar.vue';
+
 interface Props {
-    id: string
+    seat: ISeat
 }
 
 defineProps<Props>()

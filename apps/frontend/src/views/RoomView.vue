@@ -4,7 +4,7 @@
             <div class="room-seats">
                 <div class="scroll-area">
                     <div class="seats-grid">
-                        <Seat class="seat" v-for="n of seats" :key="n" :id="''+n"></Seat>
+                        <Seat class="seat" v-for="seat of seats" :key="seat.id" :seat="seat"></Seat>
                     </div>
                 </div>
             </div>
@@ -52,8 +52,8 @@ import IconDoorOpen from '../components/icons/IconDoorOpen.vue';
 import IconVolumeHigh from '../components/icons/IconVolumeHigh.vue';
 import IconExpand from '../components/icons/IconExpand.vue';
 import Avatar from '../components/Avatar.vue';
-import { IUser } from '../types';
 import Seat from '../components/Seat.vue';
+import type { ISeat, IUser } from '../types';
 
 const hasPerspective = ref(true)
 
@@ -75,9 +75,21 @@ function generateSeatsId(rows: number, cols: number): string[] {
     });
 }
 
-const seats = computed(() => {
-    return generateSeatsId(9, 6)
+const seats = computed<ISeat[]>(() => {
+    return generateSeatsId(9, 6).map(id => ({ id: id }))
 })
+
+seats.value[0].user = {
+    id: 'aad',
+    name: 'Gilmar Andrade',
+    color: '#B03AFF'
+}
+
+seats.value[8].user = {
+    id: 'wsdf',
+    name: 'Arnaldo Antunes',
+    color: '#42D1EB'
+}
 </script>
 
 <style scoped>

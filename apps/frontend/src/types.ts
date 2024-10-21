@@ -4,6 +4,12 @@ interface IUser {
     color: string
 }
 
+interface ISeat {
+    id: string,
+    user?: IUser
+}
+
 export type {
-    IUser
+    IUser,
+    ISeat
 }
