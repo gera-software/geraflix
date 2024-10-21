@@ -24,6 +24,7 @@
             </div>
         </div>
         <div class="room-bottom-bar">
+            <Avatar :user="user" />
             <ButtonIcon title="status-off" variant="status-off">
                 <IconMicrophoneSlash/>
             </ButtonIcon>
@@ -50,12 +51,20 @@ import IconFilm from '../components/icons/IconFilm.vue';
 import IconDoorOpen from '../components/icons/IconDoorOpen.vue';
 import IconVolumeHigh from '../components/icons/IconVolumeHigh.vue';
 import IconExpand from '../components/icons/IconExpand.vue';
+import Avatar from '../components/Avatar.vue';
+import { IUser } from '../types';
 
 const hasPerspective = ref(true)
 
 function toggleScreen() {
     hasPerspective.value = !hasPerspective.value
 }
+
+const user = ref<IUser>({
+    id: 'aad',
+    name: 'Gilmar Andrade',
+    color: '#B03AFF'
+})
 </script>
 
 <style scoped>
