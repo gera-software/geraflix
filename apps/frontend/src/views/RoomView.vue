@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import BaseButtonIcon from '../components/BaseButtonIcon.vue';
 import IconMicrophoneSlash from '../components/icons/IconMicrophoneSlash.vue';
 import IconVideoSlash from '../components/icons/IconVideoSlash.vue';
@@ -66,6 +66,8 @@ import { useFullscreen } from '@vueuse/core'
 import VolumeButtonSlider from '../components/VolumeButtonSlider.vue';
 import IconMicrophone from '../components/icons/IconMicrophone.vue';
 import IconFilmSlash from '../components/icons/IconFilmSlash.vue';
+
+import { state } from '../config/socket';
 
 const streamVolume = ref(0.4)
 
@@ -109,7 +111,21 @@ seats.value[8].occupant = {
     camStatus: false,
 } as IAttendee
 
-const meUser = ref(seats.value[0].occupant as IHost)
+
+const meUser = ref<IHost>({
+    kind: 'host',
+    id: 'aad',
+    name: 'Gilmar Andrade',
+    color: '#B03AFF',
+    connectionStatus: true,
+    micStatus: false,
+    camStatus: false,
+    screenShareStatus: false
+})
+
+watch(state, () => {
+    meUser.value.connectionStatus = state.connected
+})
 
 function toggleMyMic() {
     meUser.value.micStatus = !meUser.value.micStatus

@@ -1,13 +1,13 @@
 import { reactive } from "vue";
 import { io } from "socket.io-client";
 
-export const state = reactive({
+const URL: string = import.meta.env.VITE_SERVER_URL
+
+const state = reactive({
   connected: false,
 });
 
-const URL: string = import.meta.env.VITE_SERVER_URL
-
-export const socket = io(URL);
+const socket = io(URL);
 console.log('SOCKET SERVER URL', URL)
 
 socket.on("connect", () => {
@@ -17,5 +17,10 @@ socket.on("connect", () => {
 
 socket.on("disconnect", () => {
   state.connected = false;
-  console.log('socket connected')
+  console.log('socket disconnected')
 });
+
+export {
+    state,
+    socket
+}
