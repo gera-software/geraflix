@@ -24,7 +24,11 @@
             </div>
         </div>
         <div class="room-bottom-bar">
-            <AvatarOccupant v-if="seats[0].occupant" :occupant="seats[0].occupant"/>
+            <AvatarOccupant v-if="seats[0].occupant" :occupant="seats[0].occupant">
+                <template v-slot:badges>
+                    <BaseBadge style="position: absolute; bottom: -2px; right: -4px;" is-dot :background-color="seats[0].occupant.connectionStatus ? '#2DAA4E' : '#FF4242'" :title="seats[0].occupant.connectionStatus ? 'online' : 'offline'"/>
+                </template>
+            </AvatarOccupant>
             <ButtonIcon title="status-off" variant="status-off">
                 <IconMicrophoneSlash/>
             </ButtonIcon>
@@ -54,6 +58,7 @@ import IconExpand from '../components/icons/IconExpand.vue';
 import Seat from '../components/Seat.vue';
 import type { IAttendee, IHost, ISeat } from '../types';
 import AvatarOccupant from '../components/AvatarOccupant.vue';
+import BaseBadge from '../components/BaseBadge.vue';
 
 const hasPerspective = ref(true)
 
@@ -81,7 +86,7 @@ seats.value[0].occupant = {
         color: '#B03AFF'
     },
     connectionStatus: true,
-    micStatus: true,
+    micStatus: false,
     camStatus: false,
     screenShareStatus: true
 } as IHost
@@ -93,8 +98,8 @@ seats.value[8].occupant = {
         name: 'Arnaldo Antunes',
         color: '#42D1EB'
     },
-    connectionStatus: true,
-    micStatus: false,
+    connectionStatus: false,
+    micStatus: true,
     camStatus: false,
 } as IAttendee
 </script>
