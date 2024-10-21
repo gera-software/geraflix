@@ -2,12 +2,19 @@
     <div class="container-center">
         <h1>Geraflix</h1>
         <h2>Compartilhe momentos cinematográficos à distância!</h2>
-        <button class="btn-primary">Criar sala</button>
+        <button class="btn-primary" @click="handleNewRoom">Criar sala</button>
     </div>
 </template>
 
 <script setup lang="ts">
+import { useRoomStore } from '../stores/useRoomStore'
 
+const { room } = useRoomStore()
+
+async function handleNewRoom() {
+    await room.setRoomId()
+    room.active = true
+}
 </script>
 
 <style scoped>
