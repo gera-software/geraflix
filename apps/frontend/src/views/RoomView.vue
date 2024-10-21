@@ -24,21 +24,24 @@
             </div>
         </div>
         <div class="room-bottom-bar">            
-            <AvatarOccupant v-if="seats[0].occupant" :occupant="seats[0].occupant">
+            <AvatarOccupant v-if="meUser" :occupant="meUser">
                 <template v-slot:badges>
-                    <BadgeConnectionStatus :connection-status="seats[0].occupant.connectionStatus" />
+                    <BadgeConnectionStatus :connection-status="meUser.connectionStatus" />
                 </template>
             </AvatarOccupant>
-            <BaseButtonIcon title="status-off" variant="status-off">
-                <IconMicrophoneSlash/>
+
+            <BaseButtonIcon :title="meUser.micStatus ? 'mic on' : 'mic off'" :variant="meUser.micStatus ? 'status-on' : 'status-off'" @click="toggleMyMic">
+                <IconMicrophone v-if="meUser.micStatus"/>
+                <IconMicrophoneSlash v-else/>
             </BaseButtonIcon>
-            <BaseButtonIcon title="default" :disabled="true">
+            <BaseButtonIcon title="cam off (soon)" :disabled="true">
                 <IconVideoSlash/>
             </BaseButtonIcon>
-            <BaseButtonIcon title="status-on" variant="status-on">
-                <IconFilm />
+            <BaseButtonIcon :title="meUser.screenShareStatus ? 'film on' : 'film off'" :variant="meUser.screenShareStatus ? 'status-on' : 'status-off'" @click="toggleMySharedScreen">
+                <IconFilm v-if="meUser.screenShareStatus" />
+                <IconFilmSlash v-else />
             </BaseButtonIcon>
-            <BaseButtonIcon title="danger" variant="danger">
+            <BaseButtonIcon title="sair da sala" variant="danger">
                 <IconDoorOpen />
             </BaseButtonIcon>
         </div>
@@ -61,6 +64,8 @@ import IconCompress from '../components/icons/IconCompress.vue';
 
 import { useFullscreen } from '@vueuse/core'
 import VolumeButtonSlider from '../components/VolumeButtonSlider.vue';
+import IconMicrophone from '../components/icons/IconMicrophone.vue';
+import IconFilmSlash from '../components/icons/IconFilmSlash.vue';
 
 const streamVolume = ref(0.4)
 
@@ -82,6 +87,7 @@ const seats = computed<ISeat[]>(() => {
     return generateSeatsId(9, 6).map(id => ({ id: id }))
 })
 
+
 seats.value[0].occupant = {
     kind: 'host',
     id: 'aad',
@@ -90,7 +96,7 @@ seats.value[0].occupant = {
     connectionStatus: true,
     micStatus: false,
     camStatus: false,
-    screenShareStatus: true
+    screenShareStatus: false
 } as IHost
 
 seats.value[8].occupant = {
@@ -102,6 +108,17 @@ seats.value[8].occupant = {
     micStatus: true,
     camStatus: false,
 } as IAttendee
+
+const meUser = ref(seats.value[0].occupant as IHost)
+
+function toggleMyMic() {
+    meUser.value.micStatus = !meUser.value.micStatus
+}
+
+function toggleMySharedScreen() {
+    meUser.value.screenShareStatus = !meUser.value.screenShareStatus
+}
+
 </script>
 
 <style scoped>
