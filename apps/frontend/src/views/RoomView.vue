@@ -47,11 +47,15 @@
                 <IconDoorOpen />
             </BaseButtonIcon>
         </div>
+        
+        <ToastContainer class="bottom-toast-container" />
     </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, toRefs, watch } from 'vue';
+import ToastContainer from '../components/ToastContainer.vue';
+
 import BaseButtonIcon from '../components/BaseButtonIcon.vue';
 import IconMicrophoneSlash from '../components/icons/IconMicrophoneSlash.vue';
 import IconVideoSlash from '../components/icons/IconVideoSlash.vue';
@@ -69,11 +73,13 @@ import VolumeButtonSlider from '../components/VolumeButtonSlider.vue';
 import IconMicrophone from '../components/icons/IconMicrophone.vue';
 import IconFilmSlash from '../components/icons/IconFilmSlash.vue';
 
+import { useToasts } from '../composables/useToasts';
+
 import { useRoute } from 'vue-router';
 import { useRoomStore } from '../stores/useRoomStore';
 
 
-
+const { addToast } = useToasts()
 
 const route = useRoute();
 
@@ -144,8 +150,9 @@ const meUser = ref<IHost>({
     screenShareStatus: false
 })
 
-watch(() => connected, () => {
+watch(connected, () => {
     meUser.value.connectionStatus = connected.value
+    addToast({ message: `Conexão ${connected.value ? 'online' : 'offline'}`})
 })
 
 function toggleMyMic() {
@@ -284,5 +291,12 @@ function toggleMySharedScreen() {
     display: flex;
     gap: 15px;
     padding: 15px;
+}
+
+.bottom-toast-container {
+    position: absolute;
+    bottom: 62px;
+    left: 0;
+    width: 100%;
 }
 </style>
