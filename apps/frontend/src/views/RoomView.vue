@@ -14,9 +14,11 @@
                     <div class="vignette"></div>
                 </div>
                 <div class="buttons-bar">
-                    <ButtonIcon title="Volume" variant="secondary">
-                        <IconVolumeHigh/>
-                    </ButtonIcon>
+                    <ButtonSlider title="Volume" variant="secondary">
+                        <IconVolumeXMark v-if="sliderValue == 0"/>
+                        <IconVolumeHigh v-else />
+                        <Slider style="width: 100px;" v-model="sliderValue" :min="0" :max="1" />
+                    </ButtonSlider>
                     <ButtonIcon :title="isStageFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'" variant="secondary" @click="toggleFullScreen">
                         <IconCompress v-if="isStageFullscreen" />
                         <IconExpand v-else />
@@ -25,6 +27,9 @@
             </div>
         </div>
         <div class="room-bottom-bar">
+            {{sliderValue}}
+
+            
             <AvatarOccupant v-if="seats[0].occupant" :occupant="seats[0].occupant">
                 <template v-slot:badges>
                     <BadgeConnectionStatus :connection-status="seats[0].occupant.connectionStatus" />
@@ -62,6 +67,15 @@ import BadgeConnectionStatus from '../components/BadgeConnectionStatus.vue';
 import IconCompress from '../components/icons/IconCompress.vue';
 
 import { useFullscreen } from '@vueuse/core'
+import Slider from '../components/Slider.vue';
+import ButtonSlider from '../components/ButtonSlider.vue';
+import IconVolumeXMark from '../components/icons/IconVolumeXMark.vue';
+
+const sliderValue = ref(0)
+
+function handleSlideChange(value: number) {
+    console.log('slide changed', value)
+}
 
 const elStage = ref<HTMLElement | null>(null)
 
