@@ -1,6 +1,6 @@
 <template>
     <div class="occupant">
-        <BaseAvatar :name="occupant.user.name" :color="occupant.user.color" />
+        <BaseAvatar :name="occupant.name" :color="occupant.color" />
 
         <slot name="badges">
             <BadgeConnectionStatus :connection-status="occupant.connectionStatus" />
