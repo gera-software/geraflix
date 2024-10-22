@@ -12,12 +12,12 @@ console.log('SOCKET SERVER URL', URL)
 
 socket.on("connect", () => {
   state.connected = true;
-  console.log('socket connected')
+  console.log('socket connected', socket.id)
 });
 
 socket.on("disconnect", () => {
   state.connected = false;
-  console.log('socket disconnected')
+  console.log('socket disconnected', socket.id)
 });
 
 export {

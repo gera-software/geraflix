@@ -28,7 +28,7 @@
             {{ size }} users
             <AvatarOccupant v-if="meUser" :occupant="meUser">
                 <template v-slot:badges>
-                    <BadgeConnectionStatus :connection-status="meUser.connectionStatus" />
+                    <BadgeConnectionStatus :connection-status="!!meUser.connectionStatus" />
                 </template>
             </AvatarOccupant>
 
@@ -53,7 +53,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, onMounted, ref, toRefs, watchEffect } from 'vue';
+import { v4 as uuidV4 } from 'uuid'
 import ToastContainer from '../components/ToastContainer.vue';
 
 import BaseButtonIcon from '../components/BaseButtonIcon.vue';
@@ -84,7 +85,7 @@ const { addToast } = useToasts()
 const route = useRoute();
 
 const { room } = useRoomStore()
-const { rId: roomId, clients, state } = toRefs(room)
+const { rId: roomId, clients, state, socket } = toRefs(room)
 
 room.setRoomId(''+route.params.roomId)
 room.active = true
@@ -152,24 +153,28 @@ const occupant2: IAttendee = {
 seats.value[8].occupant = occupant2
 
 
+// TODO create random user profile info, host or attendee
 const meUser = ref<IHost>({
     kind: 'host',
-    id: 'aad',
+    id: uuidV4(),
     name: 'Gilmar Andrade',
     color: '#B03AFF',
-    connectionStatus: true,
+    connectionStatus: false,
     micStatus: false,
     camStatus: false,
     screenShareStatus: false,
 
     roomId: '',
     socketId: '',
-    peerId: ''
+    peerId: 'TODO'
 })
 
-watch(connected, () => {
+watchEffect(() => {
+    meUser.value.roomId = roomId.value ?? ''
+    meUser.value.socketId = socket.value.id ?? ''
     meUser.value.connectionStatus = connected.value
     addToast({ message: `Conexão ${connected.value ? 'online' : 'offline'}`})
+    console.log(meUser.value)
 })
 
 function toggleMyMic() {
@@ -179,6 +184,12 @@ function toggleMyMic() {
 function toggleMySharedScreen() {
     meUser.value.screenShareStatus = !meUser.value.screenShareStatus
 }
+
+onMounted(() => {
+    console.log('onMounted')
+
+    room.joinRoom(meUser)
+})
 
 </script>
 

@@ -1,11 +1,6 @@
 import { MaybeRefOrGetter, reactive, ref, toValue } from "vue"
 import { state, socket } from "../config/socket";
-
-interface User {
-    peerId?: string,
-    name?: string,
-    color?: string,
-}
+import { IOccupant } from "../types";
 
 export function useRoom() {
 
@@ -14,7 +9,7 @@ export function useRoom() {
 
     const active = ref(false)
 
-    const clients = reactive(new Map<string, User>())
+    const clients = reactive(new Map<string, IOccupant>())
 
     /**
      * configura socket para acessar a sala com id especificado.
@@ -49,23 +44,23 @@ export function useRoom() {
         return socket.emitWithAck('create-meeting')
     }
 
-    async function joinRoom(user: MaybeRefOrGetter<User>) {
+    async function joinRoom(user: MaybeRefOrGetter<IOccupant>) {
         const u = toValue(user)
         console.log('[useRoom] join-meeting', rId.value, u)
         try {
             const response = await socket.emitWithAck("join-meeting", rId.value, u);
 
             // @ts-ignore TODO peer type?
-            response.forEach(peer => {
-                clients.set(peer.peerId, peer)
+            response.forEach(user => {
+                clients.set(user.id, user)
             });
         } catch(e) {
             console.error(e)
         }
     }
 
-    function leaveRoom(peerId: MaybeRefOrGetter<string>) {
-        const uId = toValue(peerId)
+    function leaveRoom(userId: MaybeRefOrGetter<string>) {
+        const uId = toValue(userId)
         console.log('[useRoom] leave-meeting', rId.value, uId)
         socket.emit("leave-meeting", rId.value, uId);
         clients.delete(uId)

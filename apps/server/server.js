@@ -39,7 +39,15 @@ function deleteRoom(id) {
 
 /**
  * 
- * user: { roomId: string, socketId: string, peerId: string } 
+ * user: { 
+ *   roomId: string, 
+ *   socketId: string, 
+ *   peerId: string, 
+ *   id: string, 
+ *   name: string, 
+ *   color: string,
+ *   kind: string 
+ * } 
  */
 function joinUser(user) {
     rooms.get(user.roomId).set(user.socketId, user)
@@ -64,23 +72,27 @@ io.on('connection', socket => {
     } )
 
     socket.on('join-meeting', (roomId, user, callback) => {
-        const userId = user.peerId
+        // const userId = user.peerId
         console.log('[join-meeting]', socket.id, roomId, user)
         socket.join(roomId)
         // FIX garantir suporte ao mesmo usuarios em várias rooms simultâneas
         joinUser({
             roomId: roomId,
             socketId: socket.id,
-            ...user,
+            peerId: user.peerId,
+            id: user.id,
+            name: user.name,
+            color: user.color,
+            kind: user.kind // TODO manage host role
         })
 
         const users = Object.fromEntries(rooms.get(roomId))
         const formatedUsers = Object.values(users)
-            .map(u => ({ 
-                peerId: u.peerId, 
-                name: u.name, 
-                color: u.color 
-            }))
+            // .map(u => ({ 
+            //     peerId: u.peerId, 
+            //     name: u.name, 
+            //     color: u.color 
+            // }))
         callback(formatedUsers)
 
         // TODO rename to joined-meeting
@@ -126,7 +138,7 @@ io.of("/").adapter.on("leave-room", (roomId, socketId) => {
     leaveUser(roomId, socketId)
 
     // TODO rename to leaved-meeting
-    io.to(roomId).emit('user-disconnected', user.peerId)
+    io.to(roomId).emit('user-disconnected', user)
 });
 
 

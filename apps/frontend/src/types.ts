@@ -6,9 +6,9 @@ interface IUser {
 
 interface IOccupant extends IUser {
     kind: string
-    connectionStatus: boolean
-    micStatus: boolean
-    camStatus: boolean
+    connectionStatus?: boolean
+    micStatus?: boolean
+    camStatus?: boolean
 
     roomId: string
     socketId: string
@@ -21,7 +21,7 @@ interface IAttendee extends IOccupant {
 
 interface IHost extends IOccupant {
     kind: 'host'
-    screenShareStatus: boolean
+    screenShareStatus?: boolean
 }
 
 interface ISeat {
