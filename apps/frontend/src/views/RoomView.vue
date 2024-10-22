@@ -191,6 +191,25 @@ onMounted(() => {
     room.joinRoom(meUser)
 })
 
+
+room.socket.on("user-connected", (user) => {
+    console.log(`[socket] user ${user.name} joined the room:`, user);
+    clients.value.set(user.id, user)
+    addToast({ message: `${user.name} entrou na reunião`})
+    // connectToNewUser(user.peerId, camStream.value);
+    // if(screenIsSharing.value) {
+    //     connectToShareScreenWithUser(user.peerId, shareScreenStream.value)
+    // }
+});
+
+room.socket.on("user-disconnected", (user) => {
+    console.log(`[socket] user ${user.name} leaved the room`);
+    clients.value.delete(user.id)
+    addToast({ message: `${user.name} saiu da reunião`})
+    // removeAllRemoteStreamsByUser(userId)
+    // _closeAllConnectionsFromUser(userId)
+});
+
 </script>
 
 <style scoped>
