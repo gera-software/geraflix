@@ -1,6 +1,6 @@
 import { MaybeRefOrGetter, reactive, ref, toValue } from "vue"
 import { state, socket } from "../config/socket";
-import { IOccupant } from "../types";
+import { IOccupant, ISeat } from "../types";
 
 export function useRoom() {
 
@@ -10,6 +10,24 @@ export function useRoom() {
     const active = ref(false)
 
     const clients = reactive(new Map<string, IOccupant>())
+
+    function generateSeatsId(rows: number, cols: number): string[] {
+        return Array.from({ length: rows * cols }, (_, index) => {
+            const row = String.fromCharCode(65 + Math.floor(index / cols)); // "A", "B", "C", etc.
+            const col = (index % cols) + 1; // "1", "2", "3", etc.
+            return `${row}${col}`;
+        });
+    }
+    
+    const seats = reactive<ISeat[]>(generateSeatsId(9, 6).map(id => ({ id: id })))
+
+    function findEmptySeat() {
+        return seats.find(seat => !seat.occupant)
+    }
+
+    function findSeatOfUser(socketId: string) {
+        return seats.find(seat => seat.occupant?.socketId == socketId)
+    }
 
     /**
      * configura socket para acessar a sala com id especificado.
@@ -48,11 +66,17 @@ export function useRoom() {
         const u = toValue(user)
         console.log('[useRoom] join-meeting', rId.value, u)
         try {
-            const response = await socket.emitWithAck("join-meeting", rId.value, u);
+            const response: IOccupant[] = await socket.emitWithAck("join-meeting", rId.value, u);
 
-            // @ts-ignore TODO peer type?
             response.forEach(user => {
                 clients.set(user.id, user)
+                const emptySeat = findEmptySeat()
+                if(emptySeat) {
+                    emptySeat.occupant = user
+                    console.log('encontrei uma cadeira vazia ', emptySeat)
+                } else {
+                    console.error('Parece que não tem cadeira para o usuário...')
+                }
             });
         } catch(e) {
             console.error(e)
@@ -63,16 +87,25 @@ export function useRoom() {
         const uId = toValue(userId)
         console.log('[useRoom] leave-meeting', rId.value, uId)
         socket.emit("leave-meeting", rId.value, uId);
-        clients.delete(uId)
+        // const user = clients.get(uId )
+        // if(user) {
+        //     const seat = findSeatOfUser(user.socketId)
+        //     if(seat) {
+        //         seat.occupant = undefined
+        //     }
+        //     clients.delete(uId)
+        // }
     }
 
     return {
         rId,
         active,
         clients,
+        seats,
         joinRoom,
         leaveRoom,
         setRoomId,
+        findSeatOfUser,
         // deprecated
         state, socket,
     }

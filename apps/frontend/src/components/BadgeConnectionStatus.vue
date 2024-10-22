@@ -5,7 +5,7 @@
 import BaseBadge from './BaseBadge.vue';
 
 interface Props {
-    connectionStatus: boolean
+    connectionStatus?: boolean
 }
 
 defineProps<Props>()

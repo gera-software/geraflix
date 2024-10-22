@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, toRefs, watchEffect } from 'vue';
+import { computed, onMounted, ref, toRefs, watch, watchEffect } from 'vue';
 import { v4 as uuidV4 } from 'uuid'
 import ToastContainer from '../components/ToastContainer.vue';
 
@@ -64,7 +64,7 @@ import IconFilm from '../components/icons/IconFilm.vue';
 import IconDoorOpen from '../components/icons/IconDoorOpen.vue';
 import IconExpand from '../components/icons/IconExpand.vue';
 import Seat from '../components/Seat.vue';
-import type { IAttendee, IHost, ISeat } from '../types';
+import type { IHost } from '../types';
 import AvatarOccupant from '../components/AvatarOccupant.vue';
 import BadgeConnectionStatus from '../components/BadgeConnectionStatus.vue';
 import IconCompress from '../components/icons/IconCompress.vue';
@@ -85,7 +85,7 @@ const { addToast } = useToasts()
 const route = useRoute();
 
 const { room } = useRoomStore()
-const { rId: roomId, clients, state, socket } = toRefs(room)
+const { rId: roomId, clients, seats, state, socket } = toRefs(room)
 
 room.setRoomId(''+route.params.roomId)
 room.active = true
@@ -93,64 +93,12 @@ room.active = true
 const connected = computed(() => state.value.connected);
 const size = computed(() => clients.value.size);
 
-
-
-
-
 const streamVolume = ref(0.4)
-
 
 
 const elStage = ref<HTMLElement | null>(null)
 
 const { isFullscreen: isStageFullscreen, toggle: toggleFullScreen } = useFullscreen(elStage)
-
-function generateSeatsId(rows: number, cols: number): string[] {
-    return Array.from({ length: rows * cols }, (_, index) => {
-        const row = String.fromCharCode(65 + Math.floor(index / cols)); // "A", "B", "C", etc.
-        const col = (index % cols) + 1; // "1", "2", "3", etc.
-        return `${row}${col}`;
-    });
-}
-
-const seats = computed<ISeat[]>(() => {
-    return generateSeatsId(9, 6).map(id => ({ id: id }))
-})
-
-
-const occupant1: IHost = {
-    kind: 'host',
-    id: 'aad',
-    name: 'Gilmar Andrade',
-    color: '#B03AFF',
-    connectionStatus: true,
-    micStatus: false,
-    camStatus: false,
-    screenShareStatus: false,
-
-    roomId: '',
-    socketId: '',
-    peerId: ''
-}
-
-seats.value[0].occupant = occupant1
-
-
-const occupant2: IAttendee = {
-    kind: 'attendee',
-    id: 'wsdf',
-    name: 'Arnaldo Antunes',
-    color: '#42D1EB',
-    connectionStatus: false,
-    micStatus: true,
-    camStatus: false,
-
-    roomId: '',
-    socketId: '',
-    peerId: ''
-}
-
-seats.value[8].occupant = occupant2
 
 
 // TODO create random user profile info, host or attendee
@@ -204,6 +152,11 @@ room.socket.on("user-connected", (user) => {
 
 room.socket.on("user-disconnected", (user) => {
     console.log(`[socket] user ${user.name} leaved the room`);
+     
+    const seat = room.findSeatOfUser(user.socketId)
+    if(seat) {
+        seat.occupant = undefined
+    }
     clients.value.delete(user.id)
     addToast({ message: `${user.name} saiu da reunião`})
     // removeAllRemoteStreamsByUser(userId)
