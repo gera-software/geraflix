@@ -113,7 +113,7 @@ const meUser = ref<IHost>({
     screenShareStatus: false,
 
     roomId: '',
-    socketId: '',
+    socketId: 'puts grila',
     peerId: 'TODO'
 })
 
@@ -140,7 +140,7 @@ onMounted(() => {
 
 
 room.socket.on("user-connected", (user) => {
-    console.log(`[socket] user ${user.name} joined the room:`, user);
+    console.log(`[socket] user ${user.socketId} joined the room:`);
     clients.value.set(user.id, user)
     const emptySeat = room.findEmptySeat()
     if(emptySeat) {
@@ -156,15 +156,17 @@ room.socket.on("user-connected", (user) => {
     // }
 });
 
-room.socket.on("user-disconnected", (user) => {
-    console.log(`[socket] user ${user.name} leaved the room`);
+room.socket.on("user-disconnected", (id) => {
+    console.log(`[socket] user ${id} leaved the room`);
      
-    const seat = room.findSeatOfUser(user.socketId)
+    const seat = room.findSeatOfUser(id)
+    const name = (seat?.occupant?.name)
+    
     if(seat) {
         seat.occupant = undefined
     }
-    clients.value.delete(user.id)
-    addToast({ message: `${user.name} saiu da reunião`})
+    clients.value.delete(id)
+    addToast({ message: `${name} saiu da reunião`})
     // removeAllRemoteStreamsByUser(userId)
     // _closeAllConnectionsFromUser(userId)
 });

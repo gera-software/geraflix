@@ -104,8 +104,8 @@ io.on('connection', socket => {
         // })
     })
 
-    socket.on('leave-meeting', (roomId, userId) => {
-        console.log('[leave-meeting]', roomId, userId)
+    socket.on('leave-meeting', (roomId) => {
+        console.log('[leave-meeting]', roomId)
         socket.leave(roomId)
         // socket.to(roomId).emit('user-disconnected', userId)
     })
@@ -135,10 +135,12 @@ io.of("/").adapter.on("leave-room", (roomId, socketId) => {
     // if(room === id) return // ignore global room events
     console.log(`#### socket ${socketId} has leaved room ${roomId}`);
     const user = {...getUser(roomId, socketId)} // shallow copy
-    leaveUser(roomId, socketId)
-
+    
     // TODO rename to leaved-meeting
-    io.to(roomId).emit('user-disconnected', user)
+    console.log('emiting "user-disconnected"', user.id)
+    io.to(roomId).emit('user-disconnected', user.id)
+
+    leaveUser(roomId, socketId)
 });
 
 

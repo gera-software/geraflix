@@ -25,8 +25,10 @@ export function useRoom() {
         return seats.find(seat => !seat.occupant)
     }
 
-    function findSeatOfUser(socketId: string) {
-        return seats.find(seat => seat.occupant?.socketId == socketId)
+    function findSeatOfUser(id: string) {
+        console.log('findSeatOfUser', seats)
+        console.log('occupants', clients)
+        return seats.find(seat => seat.occupant?.id == id)
     }
 
     /**
@@ -64,7 +66,8 @@ export function useRoom() {
 
     async function joinRoom(user: MaybeRefOrGetter<IOccupant>) {
         const u = toValue(user)
-        console.log('[useRoom] join-meeting', rId.value, u)
+        console.log(u)
+        console.log('[useRoom] join-meeting', rId.value, u.socketId)
         try {
             const response: IOccupant[] = await socket.emitWithAck("join-meeting", rId.value, u);
 
