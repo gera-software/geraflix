@@ -105,6 +105,7 @@ export function useRoom() {
         joinRoom,
         leaveRoom,
         setRoomId,
+        findEmptySeat,
         findSeatOfUser,
         // deprecated
         state, socket,

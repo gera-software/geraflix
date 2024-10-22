@@ -142,6 +142,13 @@ onMounted(() => {
 room.socket.on("user-connected", (user) => {
     console.log(`[socket] user ${user.name} joined the room:`, user);
     clients.value.set(user.id, user)
+    const emptySeat = room.findEmptySeat()
+    if(emptySeat) {
+        emptySeat.occupant = user
+        console.log('encontrei uma cadeira vazia ', emptySeat)
+    } else {
+        console.error('Parece que não tem cadeira para o usuário...')
+    }
     addToast({ message: `${user.name} entrou na reunião`})
     // connectToNewUser(user.peerId, camStream.value);
     // if(screenIsSharing.value) {
