@@ -78,6 +78,7 @@ import { useToasts } from '../composables/useToasts';
 
 import { useRoute } from 'vue-router';
 import { useRoomStore } from '../stores/useRoomStore';
+import { generateRandomUser } from '../helpers/randomUser';
 
 
 const { addToast } = useToasts()
@@ -105,8 +106,7 @@ const { isFullscreen: isStageFullscreen, toggle: toggleFullScreen } = useFullscr
 const meUser = ref<IHost>({
     kind: 'host',
     id: uuidV4(),
-    name: 'Gilmar Andrade',
-    color: '#B03AFF',
+    ...generateRandomUser(),
     connectionStatus: false,
     micStatus: false,
     camStatus: false,
@@ -135,7 +135,6 @@ function toggleMySharedScreen() {
 
 onMounted(() => {
     console.log('onMounted')
-
     room.joinRoom(meUser)
 })
 
