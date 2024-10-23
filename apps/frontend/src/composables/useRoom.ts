@@ -100,6 +100,13 @@ export function useRoom() {
         //     }
         //     clients.delete(uId)
         // }
+
+        const seat = findSeatOfUser(uId)
+        
+        if(seat) {
+            seat.occupant = undefined
+        }
+        clients.delete(uId)
     }
 
     return {

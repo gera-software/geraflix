@@ -43,7 +43,7 @@
                 <IconFilm v-if="meOccupant.screenShareStatus" />
                 <IconFilmSlash v-else />
             </BaseButtonIcon>
-            <BaseButtonIcon title="sair da sala" variant="danger">
+            <BaseButtonIcon title="sair da sala" variant="danger" @click="handleLeaveRoom">
                 <IconDoorOpen />
             </BaseButtonIcon>
         </div>
@@ -183,6 +183,19 @@ room.socket.on("user-disconnected", (id) => {
     // removeAllRemoteStreamsByUser(userId)
     // _closeAllConnectionsFromUser(userId)
 });
+
+// TODO ao desligar a chamada é preciso garantir que todas as conexões são fechadas, inclusive a de compartilhamento de tela, se houver
+function handleLeaveRoom() {
+    // removeAllRemoteStreamsByUser(userId.value)
+    // _closeAllConnectionsFromUser(userId.value)
+    // TODO should destroy peer?
+    // destroy() 
+    
+    // TODO shoud reset room data when leaving
+    room.leaveRoom(meUser.value.id)
+    room.active = false
+    addToast({ message: `${meUser.value.name} saiu da reunião`})
+}
 
 </script>
 
