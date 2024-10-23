@@ -74,7 +74,7 @@ io.on('connection', socket => {
         callback({ roomId, ownerId: userId })
     } )
 
-    socket.on('join-meeting', (roomId, user, callback) => {
+    socket.on('join-meeting', (roomId, user, peerId, callback) => {
         // const userId = user.peerId
         console.log('[join-meeting]', socket.id, roomId, user)
         socket.join(roomId)
@@ -82,11 +82,11 @@ io.on('connection', socket => {
         joinUser({
             roomId: roomId,
             socketId: socket.id,
-            peerId: user.peerId,
+            peerId: peerId,
             id: user.id,
             name: user.name,
             color: user.color,
-            kind: user.kind // TODO manage host role
+            kind: 'attendee' // TODO manage host role
         })
 
         const users = Object.fromEntries(rooms.get(roomId))

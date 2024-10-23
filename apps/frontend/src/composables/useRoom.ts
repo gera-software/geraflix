@@ -1,6 +1,6 @@
 import { MaybeRefOrGetter, reactive, ref, toValue } from "vue"
 import { state, socket } from "../config/socket";
-import { IOccupant, ISeat } from "../types";
+import { IOccupant, ISeat, IUser } from "../types";
 
 export function useRoom() {
 
@@ -66,18 +66,18 @@ export function useRoom() {
         return socket.emitWithAck('create-meeting', userId)
     }
 
-    async function joinRoom(user: MaybeRefOrGetter<IOccupant>) {
+    async function joinRoom(user: MaybeRefOrGetter<IUser>, peerId: string) {
         const u = toValue(user)
         console.log(u)
-        console.log('[useRoom] join-meeting', rId.value, u.socketId)
+        console.log('[useRoom] join-meeting', rId.value, u)
         try {
-            const response: IOccupant[] = await socket.emitWithAck("join-meeting", rId.value, u);
+            const response: IOccupant[] = await socket.emitWithAck("join-meeting", rId.value, u, peerId);
 
-            response.forEach(user => {
-                clients.set(user.id, user)
+            response.forEach(occupant => {
+                clients.set(occupant.id, occupant)
                 const emptySeat = findEmptySeat()
                 if(emptySeat) {
-                    emptySeat.occupant = user
+                    emptySeat.occupant = occupant
                     console.log('encontrei uma cadeira vazia ', emptySeat)
                 } else {
                     console.error('Parece que não tem cadeira para o usuário...')

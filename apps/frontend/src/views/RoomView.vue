@@ -144,19 +144,10 @@ onMounted(() => {
 
     console.log('onMounted', 'auth-user', meUser.value, meOccupant.value)
     if(meUser.value) {
-        room.joinRoom({
-            id: meUser.value.id,
-            name: meUser.value.name,
-            color: meUser.value.color,
-            kind: 'attendee',
-            // connectionStatus: boolean
-            // micStatus?: boolean
-            // camStatus?: boolean
-
-            roomId: ''+route.params.roomId,
-            socketId: socket.value.id ?? '',
-            peerId: 'TODO'
-        })
+        room.joinRoom(
+            meUser.value,
+            'TODO-peerId'
+        )
     }
 })
 
