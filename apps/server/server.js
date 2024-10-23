@@ -69,15 +69,17 @@ io.on('connection', socket => {
 
     socket.on('create-meeting', (userId, callback) => {
         const roomId = uuidV4()
-        console.log('[create-meeting]', roomId, userId)
         roomsOwners.set(roomId, userId)
+        console.log('[create-meeting]', roomId, userId)
         callback({ roomId, ownerId: userId })
     } )
 
     socket.on('join-meeting', (roomId, user, peerId, callback) => {
-        // const userId = user.peerId
-        console.log('[join-meeting]', socket.id, roomId, user)
+        const isHost = roomsOwners.get(roomId) === user.id
+        console.log('[join-meeting]', socket.id, roomId, user, isHost)
         socket.join(roomId)
+
+
         // FIX garantir suporte ao mesmo usuarios em várias rooms simultâneas
         joinUser({
             roomId: roomId,
@@ -86,7 +88,7 @@ io.on('connection', socket => {
             id: user.id,
             name: user.name,
             color: user.color,
-            kind: 'attendee' // TODO manage host role
+            kind: isHost ? 'host' : 'attendee'
         })
 
         const users = Object.fromEntries(rooms.get(roomId))

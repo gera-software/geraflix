@@ -24,7 +24,6 @@
             </div>
         </div>
         <div class="room-bottom-bar">
-            {{ roomId }}
             {{ size }} users
             <AvatarOccupant v-if="meOccupant" :occupant="meOccupant">
                 <template v-slot:badges>
