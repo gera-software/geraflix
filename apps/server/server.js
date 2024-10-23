@@ -26,6 +26,7 @@ app.get('/api/room', (req, res) => {
 })
 
 const rooms = new Map()
+const roomsOwners = new Map()
 
 function createRoom(id) {
     rooms.set(id, new Map())
@@ -34,6 +35,7 @@ function createRoom(id) {
 
 function deleteRoom(id) {
     rooms.delete(id)
+    roomsOwners.delete(id)
     console.log('deleteRoom()', id, rooms)
 }
 
@@ -65,10 +67,11 @@ function leaveUser(roomId, socketId) {
 
 io.on('connection', socket => {
 
-    socket.on('create-meeting', (callback) => {
+    socket.on('create-meeting', (userId, callback) => {
         const roomId = uuidV4()
-        console.log('[create-meeting]', roomId)
-        callback({ roomId })
+        console.log('[create-meeting]', roomId, userId)
+        roomsOwners.set(roomId, userId)
+        callback({ roomId, ownerId: userId })
     } )
 
     socket.on('join-meeting', (roomId, user, callback) => {

@@ -29,10 +29,14 @@ interface ISeat {
     occupant?: IOccupant
 }
 
+export function isHost(occupant: IOccupant): occupant is IHost {
+    return (<IHost>occupant).kind == 'host';
+ }
+
 export type {
     IUser,
     IOccupant,
     IHost,
     IAttendee,
-    ISeat
+    ISeat,
 }

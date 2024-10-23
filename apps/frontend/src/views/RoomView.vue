@@ -1,5 +1,5 @@
 <template>
-    <div class="room-layout" :class="{ 'is-stage-fullscreen':  isStageFullscreen }">
+    <div v-if="meOccupant" class="room-layout" :class="{ 'is-stage-fullscreen':  isStageFullscreen }">
         <div class="room-container">
             <div class="room-seats">
                 <div class="scroll-area">
@@ -26,21 +26,21 @@
         <div class="room-bottom-bar">
             {{ roomId }}
             {{ size }} users
-            <AvatarOccupant v-if="meUser" :occupant="meUser">
+            <AvatarOccupant v-if="meOccupant" :occupant="meOccupant">
                 <template v-slot:badges>
-                    <BadgeConnectionStatus :connection-status="!!meUser.connectionStatus" />
+                    <BadgeConnectionStatus :connection-status="!!meOccupant.connectionStatus" />
                 </template>
             </AvatarOccupant>
 
-            <BaseButtonIcon :title="meUser.micStatus ? 'mic on' : 'mic off'" :variant="meUser.micStatus ? 'status-on' : 'status-off'" @click="toggleMyMic">
-                <IconMicrophone v-if="meUser.micStatus"/>
+            <BaseButtonIcon :title="meOccupant.micStatus ? 'mic on' : 'mic off'" :variant="meOccupant.micStatus ? 'status-on' : 'status-off'" @click="toggleMyMic">
+                <IconMicrophone v-if="meOccupant.micStatus"/>
                 <IconMicrophoneSlash v-else/>
             </BaseButtonIcon>
             <BaseButtonIcon title="cam off (soon)" :disabled="true">
                 <IconVideoSlash/>
             </BaseButtonIcon>
-            <BaseButtonIcon :title="meUser.screenShareStatus ? 'film on' : 'film off'" :variant="meUser.screenShareStatus ? 'status-on' : 'status-off'" @click="toggleMySharedScreen">
-                <IconFilm v-if="meUser.screenShareStatus" />
+            <BaseButtonIcon v-if="isHost(meOccupant)" :title="meOccupant.screenShareStatus ? 'film on' : 'film off'" :variant="meOccupant.screenShareStatus ? 'status-on' : 'status-off'" @click="toggleMySharedScreen">
+                <IconFilm v-if="meOccupant.screenShareStatus" />
                 <IconFilmSlash v-else />
             </BaseButtonIcon>
             <BaseButtonIcon title="sair da sala" variant="danger">
@@ -50,10 +50,12 @@
         
         <ToastContainer class="bottom-toast-container" />
     </div>
+    <div v-else>loading...
+    </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, toRefs, watch, watchEffect } from 'vue';
+import { computed, onMounted, ref, toRefs, watchEffect } from 'vue';
 import { v4 as uuidV4 } from 'uuid'
 import ToastContainer from '../components/ToastContainer.vue';
 
@@ -64,7 +66,7 @@ import IconFilm from '../components/icons/IconFilm.vue';
 import IconDoorOpen from '../components/icons/IconDoorOpen.vue';
 import IconExpand from '../components/icons/IconExpand.vue';
 import Seat from '../components/Seat.vue';
-import type { IHost } from '../types';
+import { isHost, type IOccupant, type IUser } from '../types';
 import AvatarOccupant from '../components/AvatarOccupant.vue';
 import BadgeConnectionStatus from '../components/BadgeConnectionStatus.vue';
 import IconCompress from '../components/icons/IconCompress.vue';
@@ -79,6 +81,7 @@ import { useToasts } from '../composables/useToasts';
 import { useRoute } from 'vue-router';
 import { useRoomStore } from '../stores/useRoomStore';
 import { generateRandomUser } from '../helpers/randomUser';
+import { useStorage } from '@vueuse/core'
 
 
 const { addToast } = useToasts()
@@ -88,8 +91,14 @@ const route = useRoute();
 const { room } = useRoomStore()
 const { rId: roomId, clients, seats, state, socket } = toRefs(room)
 
-room.setRoomId(''+route.params.roomId)
-room.active = true
+const defaultMe: IUser = {
+    id: uuidV4(),
+    ...generateRandomUser(),
+}
+
+const meUser = useStorage('geraflix:auth-user', defaultMe, localStorage, { mergeDefaults: true })
+
+
 
 const connected = computed(() => state.value.connected);
 const size = computed(() => clients.value.size);
@@ -102,40 +111,53 @@ const elStage = ref<HTMLElement | null>(null)
 const { isFullscreen: isStageFullscreen, toggle: toggleFullScreen } = useFullscreen(elStage)
 
 
-// TODO create random user profile info, host or attendee
-const meUser = ref<IHost>({
-    kind: 'host',
-    id: uuidV4(),
-    ...generateRandomUser(),
-    connectionStatus: false,
-    micStatus: false,
-    camStatus: false,
-    screenShareStatus: false,
 
-    roomId: '',
-    socketId: 'puts grila',
-    peerId: 'TODO'
+const meOccupant = computed<IOccupant | undefined>(() => {
+    return room.clients.get(meUser.value.id)
 })
 
 watchEffect(() => {
-    meUser.value.roomId = roomId.value ?? ''
-    meUser.value.socketId = socket.value.id ?? ''
-    meUser.value.connectionStatus = connected.value
-    addToast({ message: `Conexão ${connected.value ? 'online' : 'offline'}`})
-    console.log(meUser.value)
+    if(meOccupant.value) {
+        meOccupant.value.roomId = roomId.value ?? ''
+        meOccupant.value.socketId = socket.value.id ?? 'puts grila'
+        meOccupant.value.connectionStatus = connected.value
+        addToast({ message: `Conexão ${connected.value ? 'online' : 'offline'}`})
+        console.log(meOccupant.value)
+    }
 })
 
 function toggleMyMic() {
-    meUser.value.micStatus = !meUser.value.micStatus
+    if(meOccupant.value) {
+        meOccupant.value.micStatus = !meOccupant.value.micStatus
+    }
 }
 
 function toggleMySharedScreen() {
-    meUser.value.screenShareStatus = !meUser.value.screenShareStatus
+    if(meOccupant.value && isHost(meOccupant.value) ) {
+        meOccupant.value.screenShareStatus = !meOccupant.value.screenShareStatus
+    }
 }
 
 onMounted(() => {
-    console.log('onMounted')
-    room.joinRoom(meUser)
+    room.init(meUser.value.id, ''+route.params.roomId)
+    room.active = true
+
+    console.log('onMounted', 'auth-user', meUser.value, meOccupant.value)
+    if(meUser.value) {
+        room.joinRoom({
+            id: meUser.value.id,
+            name: meUser.value.name,
+            color: meUser.value.color,
+            kind: 'attendee',
+            // connectionStatus: boolean
+            // micStatus?: boolean
+            // camStatus?: boolean
+
+            roomId: ''+route.params.roomId,
+            socketId: socket.value.id ?? '',
+            peerId: 'TODO'
+        })
+    }
 })
 
 

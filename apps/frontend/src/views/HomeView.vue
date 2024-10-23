@@ -7,14 +7,30 @@
 </template>
 
 <script setup lang="ts">
+import { useStorage } from '@vueuse/core'
 import { useRoomStore } from '../stores/useRoomStore'
+import { onMounted } from 'vue';
+import { IUser } from '../types';
+import { v4 as uuidV4 } from 'uuid'
+import { generateRandomUser } from '../helpers/randomUser';
 
 const { room } = useRoomStore()
 
 async function handleNewRoom() {
-    await room.setRoomId()
+    await room.init(authUser.value.id)
     room.active = true
 }
+
+const defaultMe: IUser = {
+    id: uuidV4(),
+    ...generateRandomUser(),
+}
+
+const authUser = useStorage('geraflix:auth-user', defaultMe, localStorage, { mergeDefaults: true })
+
+onMounted(() => {
+    console.log('authUser', authUser)
+})
 </script>
 
 <style scoped>

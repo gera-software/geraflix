@@ -35,11 +35,13 @@ export function useRoom() {
      * configura socket para acessar a sala com id especificado.
      * 
      * 
-     * se o id não for especificado, cria um novo id único
-     * @param id 
+     * 
+     * @param userId room owner id
+     * @param roomId se o id não for especificado, cria um novo id único
      * @returns 
      */
-    async function setRoomId(roomId?: MaybeRefOrGetter<string>) {
+    async function init(userId: MaybeRefOrGetter<string>, roomId?: MaybeRefOrGetter<string>) {
+        const uId = toValue(userId)
         const id = toValue(roomId)
 
         if(id) {
@@ -49,8 +51,8 @@ export function useRoom() {
         }
 
         try {
-            const response = await getRandomId()
-            console.log('ROOM ID NOT DEFINED, CREATING RANDOM MEETING ID')
+            const response = await createRandomRoom(uId)
+            console.log('ROOM ID NOT DEFINED, CREATING RANDOM MEETING ID', response)
             
             rId.value = response.roomId
             console.log('ROOM MEETING ID', rId.value)
@@ -60,8 +62,8 @@ export function useRoom() {
         }
     }
 
-    async function getRandomId() {
-        return socket.emitWithAck('create-meeting')
+    async function createRandomRoom(userId: string) {
+        return socket.emitWithAck('create-meeting', userId)
     }
 
     async function joinRoom(user: MaybeRefOrGetter<IOccupant>) {
@@ -105,9 +107,9 @@ export function useRoom() {
         active,
         clients,
         seats,
+        init,
         joinRoom,
         leaveRoom,
-        setRoomId,
         findEmptySeat,
         findSeatOfUser,
         // deprecated
