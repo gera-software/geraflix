@@ -343,7 +343,7 @@ function removeFromRemoteStreams(remoteStream: RemoteStream) {
 }
 
 function removeAllRemoteStreamsByUser(userId: string) {
-    const streamsToRemove = remoteStreams.value.filter(s => s.id == userId)
+    const streamsToRemove = remoteStreams.value.filter(s => s.user?.id == userId)
     for(const remoteStream of streamsToRemove) {
         removeFromRemoteStreams(remoteStream as RemoteStream)
     }
