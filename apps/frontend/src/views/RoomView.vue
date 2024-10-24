@@ -166,11 +166,11 @@ function toggleMyCam() {
     muteCam()
 }
 
-function toggleMySharedScreen() {
-    screenIsSharing.value = !screenIsSharing.value
+async function toggleMySharedScreen() {
 
     // ativar compartilhamento
-    if(screenIsSharing.value) {
+    if(!screenIsSharing.value) {
+        await startScreenSharing()
         // FIX deve dar um jeito de esperar o usuario iniciar o compartilhamento no navegador antes de connectar com os outros usuarios, senão a mediaconnection estará vazia
         // setTimeout(() => {
         //     // TODO deve ter um jeito mais facil de pegar a lista de peerIds e excluir o meu peerIdLocal, usando o usePeer composable
@@ -181,8 +181,10 @@ function toggleMySharedScreen() {
         //         }
         //     }
         // }, 10000)
-    } else { // desativar compartilhamento
-            // console.log('DESATIVAR COMPARTILHAMENTO DE TELA')
+    } else { 
+        // desativar compartilhamento
+        // console.log('DESATIVAR COMPARTILHAMENTO DE TELA')
+        stopScreenSharing()
     }
 }
 
@@ -262,7 +264,7 @@ const {
 
 const sharedScreenVideo = ref<HTMLVideoElement>();
 
-const { stream: shareScreenStream, stop, enabled: screenIsSharing } = useDisplayMedia({ 
+const { stream: shareScreenStream, stop: stopScreenSharing, start: startScreenSharing,  enabled: screenIsSharing } = useDisplayMedia({ 
     video: true, 
     // high quality audio https://stackoverflow.com/questions/46063374/is-it-really-possible-for-webrtc-to-stream-high-quality-audio-without-noise
     audio: {
