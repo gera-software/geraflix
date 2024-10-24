@@ -10,7 +10,7 @@ import IconMicrophone from './icons/IconMicrophone.vue';
 import IconMicrophoneSlash from './icons/IconMicrophoneSlash.vue';
 
 interface Props {
-    micStatus: boolean
+    micStatus?: boolean
 }
 
 defineProps<Props>()
