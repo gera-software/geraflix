@@ -6,6 +6,10 @@
                     <div class="seats-grid">
                         <Seat v-for="seat of seats" :key="seat.id" :seat="seat"></Seat>
                     </div>
+                    sound level: {{ soundLevel }}
+                    <video ref="camVideo" autoplay muted></video>
+                    cam enabled: {{ camIsEnabled }} / 
+                    mic enabled:  {{ micIsEnabled }} / 
                 </div>
             </div>
             <div ref="elStage" class="room-stage">
@@ -35,9 +39,13 @@
                 <IconMicrophone v-if="meOccupant.micStatus"/>
                 <IconMicrophoneSlash v-else/>
             </BaseButtonIcon>
-            <BaseButtonIcon title="cam off (soon)" :disabled="true">
-                <IconVideoSlash/>
+            <BaseButtonIcon :title="meOccupant.camStatus ? 'cam on' : 'cam off'" :variant="meOccupant.camStatus ? 'status-on' : 'status-off'" @click="toggleMyCam">
+                <IconVideo v-if="meOccupant.camStatus"/>
+                <IconVideoSlash v-else/>
             </BaseButtonIcon>
+            <!-- <BaseButtonIcon title="cam off (soon)" :disabled="true">
+                <IconVideoSlash/>
+            </BaseButtonIcon> -->
             <BaseButtonIcon v-if="isHost(meOccupant)" :title="meOccupant.screenShareStatus ? 'film on' : 'film off'" :variant="meOccupant.screenShareStatus ? 'status-on' : 'status-off'" @click="toggleMySharedScreen">
                 <IconFilm v-if="meOccupant.screenShareStatus" />
                 <IconFilmSlash v-else />
@@ -81,6 +89,8 @@ import { useRoute } from 'vue-router';
 import { useRoomStore } from '../stores/useRoomStore';
 import { generateRandomUser } from '../helpers/randomUser';
 import { useStorage } from '@vueuse/core'
+import { useLocalStream } from '../composables/useLocalStream';
+import IconVideo from '../components/icons/IconVideo.vue';
 
 
 const { addToast } = useToasts()
@@ -125,10 +135,24 @@ watchEffect(() => {
     }
 })
 
-function toggleMyMic() {
+watchEffect(() => {
     if(meOccupant.value) {
-        meOccupant.value.micStatus = !meOccupant.value.micStatus
+        meOccupant.value.micStatus = micIsEnabled.value
     }
+})
+
+watchEffect(() => {
+    if(meOccupant.value) {
+        meOccupant.value.camStatus = camIsEnabled.value
+    }
+})
+
+function toggleMyMic() {
+    muteMic()
+}
+
+function toggleMyCam() {
+    muteCam()
 }
 
 function toggleMySharedScreen() {
@@ -195,6 +219,20 @@ function handleLeaveRoom() {
     room.active = false
     addToast({ message: `${meUser.value.name} saiu da reunião`})
 }
+
+
+
+const camVideo = ref<HTMLVideoElement>();
+
+const { 
+    stream: camStream, 
+    camIsEnabled, 
+    micIsEnabled, 
+    muteCam, 
+    muteMic,
+    soundLevel,
+} = useLocalStream(camVideo)
+
 
 </script>
 
