@@ -10,6 +10,8 @@
                     <video ref="camVideo" autoplay muted></video>
                     cam enabled: {{ camIsEnabled }} / 
                     mic enabled:  {{ micIsEnabled }} / 
+
+                    <video ref="sharedScreenVideo" autoplay muted></video>
                 </div>
             </div>
             <div ref="elStage" class="room-stage">
@@ -78,7 +80,7 @@ import AvatarOccupant from '../components/AvatarOccupant.vue';
 import BadgeConnectionStatus from '../components/BadgeConnectionStatus.vue';
 import IconCompress from '../components/icons/IconCompress.vue';
 
-import { useFullscreen } from '@vueuse/core'
+import { useDisplayMedia, useFullscreen } from '@vueuse/core'
 import VolumeButtonSlider from '../components/VolumeButtonSlider.vue';
 import IconMicrophone from '../components/icons/IconMicrophone.vue';
 import IconFilmSlash from '../components/icons/IconFilmSlash.vue';
@@ -147,6 +149,15 @@ watchEffect(() => {
     }
 })
 
+watchEffect(() => {
+    if(meOccupant.value && isHost(meOccupant.value)) {
+        meOccupant.value.screenShareStatus = screenIsSharing.value
+    }
+})
+
+
+
+
 function toggleMyMic() {
     muteMic()
 }
@@ -156,8 +167,22 @@ function toggleMyCam() {
 }
 
 function toggleMySharedScreen() {
-    if(meOccupant.value && isHost(meOccupant.value) ) {
-        meOccupant.value.screenShareStatus = !meOccupant.value.screenShareStatus
+    screenIsSharing.value = !screenIsSharing.value
+
+    // ativar compartilhamento
+    if(screenIsSharing.value) {
+        // FIX deve dar um jeito de esperar o usuario iniciar o compartilhamento no navegador antes de connectar com os outros usuarios, senão a mediaconnection estará vazia
+        // setTimeout(() => {
+        //     // TODO deve ter um jeito mais facil de pegar a lista de peerIds e excluir o meu peerIdLocal, usando o usePeer composable
+        //     for (const client of clients.value.values()) {
+        //         if(client.peerId != user.value.peerId) {// o clinente não sou eu mesmo
+        //             console.log('connectToShareScreenWithUser: ', client.peerId, client.peerId == user.value.peerId ? 'EU' : 'REMOTO');
+        //             connectToShareScreenWithUser(client.peerId, shareScreenStream.value)
+        //         }
+        //     }
+        // }, 10000)
+    } else { // desativar compartilhamento
+            // console.log('DESATIVAR COMPARTILHAMENTO DE TELA')
     }
 }
 
@@ -233,6 +258,47 @@ const {
     soundLevel,
 } = useLocalStream(camVideo)
 
+
+
+const sharedScreenVideo = ref<HTMLVideoElement>();
+
+const { stream: shareScreenStream, stop, enabled: screenIsSharing } = useDisplayMedia({ 
+    video: true, 
+    // high quality audio https://stackoverflow.com/questions/46063374/is-it-really-possible-for-webrtc-to-stream-high-quality-audio-without-noise
+    audio: {
+        autoGainControl: false,
+        channelCount: 2,
+        echoCancellation: false,
+        // @ts-ignore latency does not exists?
+        latency: 0,
+        noiseSuppression: false,
+        sampleRate: 48000,
+        sampleSize: 16,
+        volume: 1.0
+    } 
+})
+
+watchEffect(() => {
+  // preview on a video element
+  if(sharedScreenVideo.value && shareScreenStream.value) {
+      sharedScreenVideo.value.srcObject = shareScreenStream.value
+  }
+  if(shareScreenStream.value) {
+    // nunca é disparado pois o stream já comeca ativado
+    //   shareScreenStream.value.addEventListener('active', (e) => {
+    //     console.log('shared screen active')
+    //   })
+    
+    // garante que o evento de desligar o compartilhamento de tela vai ser disparado, mesmo se o usuário fechar a aba/janela/tela que estava sendo compartilhada
+    shareScreenStream.value.addEventListener('inactive', (e) => {
+        console.log('shared screen inactive', e)
+        stop()
+        console.log('ENVIAR COMANDO DE ENCERRAR COMPARTILHAMENTO DE TELA')
+        // disconnectSharedScreenWithAllUsers()
+    })
+  }
+
+})
 
 </script>
 
