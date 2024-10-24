@@ -104,7 +104,7 @@ io.on('connection', socket => {
         callback(formatedUsers)
 
         // TODO rename to joined-meeting
-        socket.to(roomId).emit('user-connected', user)
+        socket.to(roomId).emit('user-connected', formatedUsers.find(occupant => occupant.id === user.id ))
 
         // socket.on('disconnect', () => {
         //     console.log('### disconnect', roomId, userId)
