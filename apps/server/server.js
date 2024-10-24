@@ -4,6 +4,9 @@ import { Server } from 'socket.io';
 import { v4 as uuidV4 } from 'uuid'
 
 import express from 'express'
+
+const port = process.env.PORT || 3000;
+
 const app = express()
 app.use(cors())
 
@@ -150,6 +153,6 @@ io.of("/").adapter.on("leave-room", (roomId, socketId) => {
 
 
 
-server.listen(3000, () => {
-    console.log('server started on port', 3000)
+server.listen(port, () => {
+    console.log('server started on port', port)
 })
