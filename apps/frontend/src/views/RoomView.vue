@@ -276,7 +276,7 @@ const {
     micIsEnabled, 
     muteCam, 
     muteMic,
-    soundLevel,
+    // soundLevel,
 } = useLocalStream(camVideo)
 
 
