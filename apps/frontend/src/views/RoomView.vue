@@ -12,12 +12,6 @@
                     <div class="seats-grid">
                         <Seat v-for="seat of seats" :key="seat.id" :seat="seat"></Seat>
                     </div>
-                    sound level: {{ soundLevel }}
-                    <video ref="camVideo" autoplay muted style="max-width: 300px"></video>
-                    cam enabled: {{ camIsEnabled }} / 
-                    mic enabled:  {{ micIsEnabled }} / 
-
-                    <video ref="sharedScreenVideo" autoplay muted style="max-width: 300px"></video>
                 </div>
             </div>
             <div ref="elStage" class="room-stage">
@@ -36,7 +30,19 @@
             </div>
         </div>
         <div class="room-bottom-bar">
-            {{ size }} users
+            <div class="me-cam-preview" title="camera preview">
+                <video ref="camVideo" autoplay muted></video>
+                <!-- 
+                sound level: {{ soundLevel }}
+                cam enabled: {{ camIsEnabled }} / 
+                mic enabled:  {{ micIsEnabled }} /    -->
+            </div>
+            <div class="me-cam-preview" title="screen share preview">
+                <video ref="sharedScreenVideo" autoplay muted></video>
+            </div>
+            <div>
+                {{ size }} users
+            </div>
             <AvatarOccupant v-if="meOccupant" :occupant="meOccupant">
                 <template v-slot:badges>
                     <BadgeConnectionStatus :connection-status="!!meOccupant.connectionStatus" />
@@ -737,5 +743,19 @@ function disconnectSharedScreenWithAllUsers() {
     bottom: 62px;
     left: 0;
     width: 100%;
+}
+
+.me-cam-preview {
+    position: relative;
+    height: 50px;
+    width: 50px;
+    background-color: rgb(190, 182, 184);
+}
+
+.me-cam-preview video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
 }
 </style>
