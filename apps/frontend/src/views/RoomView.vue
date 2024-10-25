@@ -18,6 +18,12 @@
                 <div class="stage-screen">
                     <div class="fuzzy-overlay"></div>
                     <div class="vignette"></div>
+
+                    <StreamPreview 
+                        v-if="screenShareRemoteStream"
+                        :remoteStream="(screenShareRemoteStream as RemoteStream)"
+                        :mediaStream="(screenShareRemoteStream.mediaChannel?.remoteStream as MediaStream)"
+                    ></StreamPreview>
                 </div>
                 <div class="buttons-bar">
                     <VolumeButtonSlider variant="secondary" v-model="streamVolume" />
@@ -192,7 +198,7 @@ async function toggleMySharedScreen() {
             //     // TODO deve ter um jeito mais facil de pegar a lista de peerIds e excluir o meu peerIdLocal, usando o usePeer composable
                 for (const client of clients.value.values()) {
                     if(client.peerId != peerId.value) {// o clinente não sou eu mesmo
-                        console.log('connectToShareScreenWithUser: ', client.peerId, client.peerId == peerId.value ? 'EU' : 'REMOTO');
+                        console.log('########################connectToShareScreenWithUser: ', client.peerId, client.peerId == peerId.value ? 'EU' : 'REMOTO');
                         connectToShareScreenWithUser(client.peerId, shareScreenStream.value)
                     }
                 }
@@ -326,6 +332,10 @@ const remoteStreams = ref<RemoteStream[]>([])
 
 const visibleRemoteStreams = computed(() => {
     return remoteStreams.value.filter(s => s.visible)
+})
+
+const screenShareRemoteStream = computed(() => {
+    return remoteStreams.value.find(s => s.type == 'screen-share' && s.visible == true)
 })
 
 function addToRemoteStreams(stream: RemoteStream) {
@@ -535,7 +545,7 @@ function connectToNewUser(destUserPeerId: string, localCamStream: MediaStream) {
 }
 
 
-function connectToShareScreenWithUser(destUserPeerId: string, localSharedScreemStream: MediaStream) {
+function connectToShareScreenWithUser(destUserPeerId: string, localSharedScreenStream: MediaStream) {
     const remoteStreamId = uuidV4()
 
     const metadata = {
@@ -560,8 +570,8 @@ function connectToShareScreenWithUser(destUserPeerId: string, localSharedScreemS
         }
 
     // call destination peer
-    const mediaConnection = call(destUserPeerId, localSharedScreemStream, options);
-    console.log('EU TO LIGANDO PRA COMPARTILHAR A TELA?', mediaConnection?.remoteStream)
+    const mediaConnection = call(destUserPeerId, localSharedScreenStream, options);
+    console.log('EU TO LIGANDO PRA COMPARTILHAR A TELA?', mediaConnection)
 
     // data controller connection
     const streamControllerConnection = connect(destUserPeerId, { metadata })
